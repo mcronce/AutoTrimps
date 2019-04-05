@@ -83,8 +83,10 @@ function buyFoodEfficientHousing() {
         bestfoodBuilding = bb.name;
     }
     if (bestfoodBuilding) {
-        document.getElementById(bestfoodBuilding).style.border = "1px solid #00CC01";
-        safeBuyBuilding(bestfoodBuilding);
+        if(game.buildings['Collector'].locked !== 0 || (bestfoodBuilding == 'Hut' || bestfoodBuilding == 'House')) {
+            document.getElementById(bestfoodBuilding).style.border = "1px solid #00CC01";
+            safeBuyBuilding(bestfoodBuilding);
+        }
     }
 }
 
