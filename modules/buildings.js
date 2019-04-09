@@ -6,31 +6,35 @@ MODULES["buildings"].storageLowlvlCutoff2 = 0.5;
 var housingList = ['Hut', 'House', 'Mansion', 'Hotel', 'Resort', 'Gateway', 'Collector', 'Warpstation'];
 
 function safeBuyBuilding(building) {
-    if (isBuildingInQueue(building))
+    if (isBuildingInQueue(building)) {
         return false;
-    if (game.buildings[building].locked)
+    }
+    if (game.buildings[building].locked) {
         return false;
+    }
     var oldBuy = preBuy2();
 
-  if (game.talents.deciBuild.purchased) {
+    if (game.talents.deciBuild.purchased) {
         game.global.buyAmt = 10;
-    if (!canAffordBuilding(building)) {
+        if (!canAffordBuilding(building)) {
+            game.global.buyAmt = 2;
+            if (!canAffordBuilding(building)) {
+                game.global.buyAmt = 1;
+            }
+        }
+    } else if (game.talents.doubleBuild.purchased) {
         game.global.buyAmt = 2;
-	if (!canAffordBuilding(building))
+        if (!canAffordBuilding(building)) {
             game.global.buyAmt = 1;
-     }
-  }
-  else if (game.talents.doubleBuild.purchased) {
-        game.global.buyAmt = 2;
-  	if (!canAffordBuilding(building)) 
+        }
+    } else {
         game.global.buyAmt = 1;
-  }        
-  else game.global.buyAmt = 1;
+    }
 
-  if (!canAffordBuilding(building)) {
-      postBuy2(oldBuy);
-      return false;
-  }
+    if (!canAffordBuilding(building)) {
+        postBuy2(oldBuy);
+        return false;
+    }
 
     game.global.firing = false;
     if (building == 'Gym' && getPageSetting('GymWall')) {
@@ -83,8 +87,10 @@ function buyFoodEfficientHousing() {
         bestfoodBuilding = bb.name;
     }
     if (bestfoodBuilding) {
-        document.getElementById(bestfoodBuilding).style.border = "1px solid #00CC01";
-        safeBuyBuilding(bestfoodBuilding);
+        if (game.buildings['Collector'].locked !== 0 || (bestfoodBuilding == 'Hut' || bestfoodBuilding == 'House')) {
+            document.getElementById(bestfoodBuilding).style.border = "1px solid #00CC01";
+            safeBuyBuilding(bestfoodBuilding);
+        }
     }
 }
 
@@ -101,14 +107,15 @@ function buyGemEfficientHousing() {
         var building = game.buildings[unlockedHousing[house]];
         var cost = getBuildingItemPrice(building, "gems", false, 1);
         var ratio = cost / building.increase.by;
-	if (unlockedHousing[house] == "Gateway" && !canAffordBuilding('Gateway'))
+        if (unlockedHousing[house] == "Gateway" && !canAffordBuilding('Gateway')) {
             continue;
+        }
         obj[unlockedHousing[house]] = ratio;
         document.getElementById(unlockedHousing[house]).style.border = "1px solid #FFFFFF";
     }
     var keysSorted = Object.keys(obj).sort(function (a, b) {
-            return obj[a] - obj[b];
-        });
+        return obj[a] - obj[b];
+    });
     bestBuilding = null;
     for (var best in keysSorted) {
         var max = getPageSetting('Max' + keysSorted[best]);
@@ -118,16 +125,19 @@ function buyGemEfficientHousing() {
             document.getElementById(bestBuilding).style.border = "1px solid #00CC00";
             var skipWarp = false;
             if (getPageSetting('WarpstationCap') && bestBuilding == "Warpstation") {
-                if (game.buildings.Warpstation.owned >= (Math.floor(game.upgrades.Gigastation.done * getPageSetting('DeltaGigastation')) + getPageSetting('FirstGigastation')))
+                if (game.buildings.Warpstation.owned >= (Math.floor(game.upgrades.Gigastation.done * getPageSetting('DeltaGigastation')) + getPageSetting('FirstGigastation'))) {
                     skipWarp = true;
+                }
             }
             var warpwallpct = getPageSetting('WarpstationWall3');
             if (warpwallpct > 1 && bestBuilding == "Warpstation") {
-                if (getBuildingItemPrice(game.buildings.Warpstation, "metal", false, 1) * Math.pow(1 - game.portal.Resourceful.modifier, game.portal.Resourceful.level) > (game.resources.metal.owned / warpwallpct))
+                if (getBuildingItemPrice(game.buildings.Warpstation, "metal", false, 1) * Math.pow(1 - game.portal.Resourceful.modifier, game.portal.Resourceful.level) > (game.resources.metal.owned / warpwallpct)) {
                     skipWarp = true;
+                }
             }
-            if (skipWarp)
+            if (skipWarp) {
                 bestBuilding = null;
+            }
             var getcoord = getPageSetting('WarpstationCoordBuy');
             if (getcoord && skipWarp) {
                 var toTip = game.buildings.Warpstation;
@@ -158,12 +168,12 @@ function buyBuildings() {
     if ((game.jobs.Miner.locked && game.global.challengeActive != 'Metal') || (game.jobs.Scientist.locked && game.global.challengeActive != "Scientist")) return;
     var customVars = MODULES["buildings"];
     var oldBuy = preBuy2();
-    var hidebuild = (getPageSetting('BuyBuildingsNew')===0 && getPageSetting('hidebuildings')==true);
+    var hidebuild = (getPageSetting('BuyBuildingsNew') === 0 && getPageSetting('hidebuildings') == true);
     game.global.buyAmt = 1;
     if (!hidebuild) {
-    buyFoodEfficientHousing();
-    buyGemEfficientHousing();
-  	}
+        buyFoodEfficientHousing();
+        buyGemEfficientHousing();
+    }
     if (!hidebuild && getPageSetting('MaxWormhole') > 0 && game.buildings.Wormhole.owned < getPageSetting('MaxWormhole') && !game.buildings.Wormhole.locked) {
         safeBuyBuilding('Wormhole');
     }
@@ -172,8 +182,9 @@ function buyBuildings() {
     if (!game.buildings.Gym.locked && (getPageSetting('MaxGym') > game.buildings.Gym.owned || getPageSetting('MaxGym') == -1)) {
         var skipGym = false;
         if (getPageSetting('DynamicGyms')) {
-            if (!game.global.preMapsActive && calcOurBlock(true) > calcBadGuyDmg(getCurrentEnemy(), null, true,true))
+            if (!game.global.preMapsActive && calcOurBlock(true) > calcBadGuyDmg(getCurrentEnemy(), null, true,true)) {
                 skipGym = true;
+            }
         }
         var gymwallpct = getPageSetting('GymWall');
         if (gymwallpct > 1) {
@@ -188,9 +199,10 @@ function buyBuildings() {
                 skipGym = true;
         }
         if (needGymystic) skipGym = true;
-        if (!skipGym)
+        if (!skipGym) {
             safeBuyBuilding('Gym');
-       	    needGymystic = false;
+        }
+        needGymystic = false;
     }
     //Tributes:
     if (!game.buildings.Tribute.locked && !hidebuild &&(getPageSetting('MaxTribute') > game.buildings.Tribute.owned || getPageSetting('MaxTribute') == -1)) {
@@ -198,7 +210,7 @@ function buyBuildings() {
     }
     //Nurseries
     if (game.buildings.Nursery.locked == 0 && (!hidebuild &&( game.global.world >= getPageSetting('NoNurseriesUntil') || getPageSetting('NoNurseriesUntil') < 1) && (getPageSetting('MaxNursery') > game.buildings.Nursery.owned || getPageSetting('MaxNursery') == -1)) || (game.global.challengeActive != "Daily" && getPageSetting('PreSpireNurseries') > game.buildings.Nursery.owned && isActiveSpireAT()) || (game.global.challengeActive == "Daily" && getPageSetting('dPreSpireNurseries') > game.buildings.Nursery.owned && disActiveSpireAT())) {
-	safeBuyBuilding('Nursery');
+        safeBuyBuilding('Nursery');
     }
 
     postBuy2(oldBuy);
