@@ -2,19 +2,19 @@ MODULES["fight"] = {};
 MODULES["fight"].breedTimerCutoff1 = 2;
 MODULES["fight"].breedTimerCutoff2 = 0.5;
 MODULES["fight"].enableDebug = true;
+MODULES['fight'].deadlock_timer = 5000;
 MODULES['fight'].life_alwaysFight_threshold = 100;
 MODULES['fight'].life_noAction_threshold = 75;
 MODULES['fight'].life_consectiveLiving_modifier = 25;
-MODULES['fight'].life_deadlock_timer = 5000;
 
-var life_stopped_time = 0;
-function lifeDeadlockCheck() {
+var stopped_time = 0;
+function deadlockCheck() {
     var ts  = (new Date()).getTime();
-    if(life_stopped_time == 0) {
-        life_stopped_time = ts;
+    if(stopped_time == 0) {
+        stopped_time = ts;
         return true;
     }
-    if(ts > (life_stopped_time + MODULES['fight'].life_deadlock_timer)) {
+    if(ts > (stopped_time + MODULES['fight'].deadlock_timer)) {
         return false;
     } else {
         return true;
@@ -24,11 +24,11 @@ function lifeDeadlockCheck() {
 function shouldWeFight() {
     if(game.global.challengeActive == 'Life') {
         if(game.global.mapsActive) {
-            life_stopped_time = 0;
+            stopped_time = 0;
             return 1;
         }
         if(game.global.gridArray.length < game.global.lastClearedCell + 1) {
-            life_stopped_time = 0;
+            stopped_time = 0;
             return 0;
         }
 
@@ -44,16 +44,16 @@ function shouldWeFight() {
             }
 
             if(game.challenges.Life.stacks >= always_fight) {
-                life_stopped_time = 0;
+                stopped_time = 0;
                 return 1;
             } else if(game.challenges.Life.stacks >= no_action) {
-                if(lifeDeadlockCheck()) {
+                if(deadlockCheck()) {
                     return 0;
                 } else {
                     return 1;
                 }
             } else {
-                if(lifeDeadlockCheck()) {
+                if(deadlockCheck()) {
                     return -1;
                 } else {
                     return 1;
