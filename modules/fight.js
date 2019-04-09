@@ -4,36 +4,36 @@ MODULES["fight"].breedTimerCutoff2 = 0.5;
 MODULES["fight"].enableDebug = true;
 
 function shouldWeFight() {
-	if(game.global.challengeActive == 'Life') {
-		if(game.global.mapsActive) {
-			return 1;
-		}
-		if(game.global.gridArray.length < game.global.lastClearedCell + 1) {
-			return 0;
-		}
-		if(game.global.gridArray[game.global.lastClearedCell + 1].mutation == 'Living') {
-			if(game.challenges.Life.stacks == 150) {
-				return 1;
-			} else if(game.challenges.Life.stacks > 125) {
-				return 0;
-			} else {
-				return -1;
-			}
-		}
-	}
-	return 1;
+    if(game.global.challengeActive == 'Life') {
+        if(game.global.mapsActive) {
+            return 1;
+        }
+        if(game.global.gridArray.length < game.global.lastClearedCell + 1) {
+            return 0;
+        }
+        if(game.global.gridArray[game.global.lastClearedCell + 1].mutation == 'Living') {
+            if(game.challenges.Life.stacks == 150) {
+                return 1;
+            } else if(game.challenges.Life.stacks > 125) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
+    }
+    return 1;
 }
 
 function fightMaybe() {
-	var should_fight = shouldWeFight();
-	if(should_fight == 1 && !game.global.fighting) {
-		fightManual();
-	} else if(should_fight == -1) {
-		forceAbandonTrimps();
-		if(game.global.preMapsActive) {
-			mapsClicked();
-		}
-	}
+    var should_fight = shouldWeFight();
+    if(should_fight == 1 && !game.global.fighting) {
+        fightManual();
+    } else if(should_fight == -1) {
+        forceAbandonTrimps();
+        if(game.global.preMapsActive) {
+            mapsClicked();
+        }
+    }
 }
 
 function betterAutoFight() {
