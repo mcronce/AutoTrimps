@@ -2,6 +2,9 @@ MODULES["fight"] = {};
 MODULES["fight"].breedTimerCutoff1 = 2;
 MODULES["fight"].breedTimerCutoff2 = 0.5;
 MODULES["fight"].enableDebug = true;
+MODULES['fight'].life_alwaysFight_threshold = 100;
+MODULES['fight'].life_noAction_threshold = 75;
+MODULES['fight'].life_consectiveLiving_modifier = 25;
 
 function shouldWeFight() {
     if(game.global.challengeActive == 'Life') {
@@ -11,10 +14,21 @@ function shouldWeFight() {
         if(game.global.gridArray.length < game.global.lastClearedCell + 1) {
             return 0;
         }
+
         if(game.global.gridArray[game.global.lastClearedCell + 1].mutation == 'Living') {
-            if(game.challenges.Life.stacks == 150) {
+            var always_fight = MODULES['fight'].life_alwaysFight_threshold;
+            var no_action = MODULES['fight'].life_noAction_threshold;
+            for(var i = game.global.lastClearedCell + 2; i < 100; i++) {
+                if(!(game.global.gridArray[i].mutation === 'Living')) {
+                    break;
+                }
+                always_fight += MODULES['fight'].life_consectiveLiving_modifier;
+                no_action += MODULES['fight'].life_consectiveLiving_modifier;
+            }
+
+            if(game.challenges.Life.stacks >= always_fight) {
                 return 1;
-            } else if(game.challenges.Life.stacks > 125) {
+            } else if(game.challenges.Life.stacks >= no_action) {
                 return 0;
             } else {
                 return -1;
