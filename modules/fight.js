@@ -46,10 +46,8 @@ function betterAutoFight() {
     var breeding = (game.resources.trimps.owned - game.resources.trimps.employed);
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
     var lowLevelFight = game.resources.trimps.maxSoldiers < breeding * 0.5 && breeding > game.resources.trimps.realMax() * 0.1 && game.global.world < 5;
-    if (!game.global.fighting) {
-        if (newSquadRdy || game.global.soldierHealth > 0 || lowLevelFight || game.global.challengeActive == 'Watch') {
-            fightMaybe();
-        }
+    if (newSquadRdy || game.global.soldierHealth > 0 || lowLevelFight || game.global.challengeActive == 'Watch') {
+        fightMaybe();
     }
 }
 
@@ -58,7 +56,7 @@ function betterAutoFight2() {
     if (game.global.autoBattle && !game.global.pauseFight) {
         pauseFight();
     }
-    if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done || game.global.fighting) {
+    if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done) {
         return;
     }
     var spireBreed = getPageSetting('SpireBreedTimer');
@@ -69,17 +67,15 @@ function betterAutoFight2() {
     var tps = breeding * potencyMod;
     var addTime = adjustedMax / tps;
     var lowLevelFight = game.resources.trimps.maxSoldiers < 0.5*breeding && breeding > 0.1*game.resources.trimps.realMax() && game.global.world <= 6 && game.global.sLevel < 1;
-    if (!game.global.fighting) { 
-        if (game.global.SpireActive){
-            if((game.global.lastBreedtime/1000)>=targetBreed && (game.global.lastBreedtime/1000)>=breedTimerLimit) {
-                fightMaybe();
-            }
-        } else if (game.global.soldierHealth > 0 && getPageSetting('AutoMaps') == 1) {
+    if (game.global.SpireActive){
+        if((game.global.lastBreedtime/1000)>=targetBreed && (game.global.lastBreedtime/1000)>=breedTimerLimit) {
             fightMaybe();
         }
-        if (newSquadRdy || lowLevelFight || game.global.challengeActive == 'Watch') {
-            fightMaybe();
-        }
+    } else if (game.global.soldierHealth > 0 && getPageSetting('AutoMaps') == 1) {
+        fightMaybe();
+    }
+    if (newSquadRdy || lowLevelFight || game.global.challengeActive == 'Watch') {
+        fightMaybe();
     }
 }
 
@@ -88,10 +84,10 @@ function betterAutoFight3() {
     if (game.global.autoBattle && game.global.pauseFight && !game.global.spireActive) {
         pauseFight();
     }
-    if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done || game.global.fighting || game.global.spireActive) {
+    if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done || game.global.spireActive) {
         return;
     }
-    if (game.global.world == 1 && !game.global.fighting) {
+    if (game.global.world == 1) {
         fightMaybe();
     }
 }
