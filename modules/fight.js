@@ -3,6 +3,33 @@ MODULES["fight"].breedTimerCutoff1 = 2;
 MODULES["fight"].breedTimerCutoff2 = 0.5;
 MODULES["fight"].enableDebug = true;
 
+function shouldWeFight() {
+	if(game.global.challengeActive == 'Life') {
+		if(game.global.mapsActive) {
+			return 1;
+		}
+		if(game.global.gridArray[game.global.lastClearedCell].mutation == 'Living') {
+			if(game.challenges.Life.stacks == 150) {
+				return 1;
+			} else if(game.challenge.Life.stacks > 125) {
+				return 0;
+			} else {
+				return -1;
+			}
+		}
+	}
+	return 1;
+}
+
+function fightMaybe() {
+	var should_fight = shouldWeFight();
+	if(should_fight == 1) {
+		fightManual();
+	} else if(should_fight == -1) {
+		forceAbandonTrimps();
+	}
+}
+
 function betterAutoFight() {
     var customVars = MODULES["fight"];
     if (game.global.autoBattle && !game.global.pauseFight) {
@@ -15,7 +42,7 @@ function betterAutoFight() {
     var lowLevelFight = game.resources.trimps.maxSoldiers < breeding * 0.5 && breeding > game.resources.trimps.realMax() * 0.1 && game.global.world < 5;
     if (!game.global.fighting) {
         if (newSquadRdy || game.global.soldierHealth > 0 || lowLevelFight || game.global.challengeActive == 'Watch') {
-            fightManual();
+            fightMaybe();
         }
     }
 }
@@ -39,13 +66,13 @@ function betterAutoFight2() {
     if (!game.global.fighting) { 
         if (game.global.SpireActive){
             if((game.global.lastBreedtime/1000)>=targetBreed && (game.global.lastBreedtime/1000)>=breedTimerLimit) {
-                fightManual();
+                fightMaybe();
             }
         } else if (game.global.soldierHealth > 0 && getPageSetting('AutoMaps') == 1) {
-            fightManual();
+            fightMaybe();
         }
         if (newSquadRdy || lowLevelFight || game.global.challengeActive == 'Watch') {
-            fightManual();
+            fightMaybe();
         }
     }
 }
@@ -59,6 +86,6 @@ function betterAutoFight3() {
         return;
     }
     if (game.global.world == 1 && !game.global.fighting) {
-        fightManual();
+        fightMaybe();
     }
 }
