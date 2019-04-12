@@ -358,12 +358,14 @@ function autoMap() {
                     var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                     if (game.global.world < 15 + theMapDifficulty) continue;
                     selectedMap = theMap.id;
+                    shouldDoMaps = true;
                     break;
                 }
                 if (theMap.name == 'Dimension of Anger' && document.getElementById("portalBtn").style.display == "none" && !game.talents.portal.purchased) {
                     var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                     if (game.global.world < 20 + theMapDifficulty) continue;
                     selectedMap = theMap.id;
+                    shouldDoMaps = true;
                     break;
                 }
                 var runningC2 = game.global.runningChallengeSquared;
@@ -371,6 +373,7 @@ function autoMap() {
                     var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                     if (game.global.world < 11 + theMapDifficulty) continue;
                     selectedMap = theMap.id;
+                    shouldDoMaps = true;
                     break;
                 }
                 var treasure = getPageSetting('TrimpleZ');
@@ -378,6 +381,7 @@ function autoMap() {
                     var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                     if ((game.global.world < 33 + theMapDifficulty) || treasure > -33 && treasure < 33) continue;
                     selectedMap = theMap.id;
+                    shouldDoMaps = true;
                     if (treasure < 0)
                         setPageSetting('TrimpleZ', 0);
                     break;
@@ -387,12 +391,14 @@ function autoMap() {
                         var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                         if (game.global.world < 80 + theMapDifficulty) continue;
                         selectedMap = theMap.id;
+                        shouldDoMaps = true;
                         break;
                     }
                     if (theMap.name == 'Bionic Wonderland' && game.global.challengeActive == "Crushed") {
                         var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                         if (game.global.world < 125 + theMapDifficulty) continue;
                         selectedMap = theMap.id;
+                        shouldDoMaps = true;
                         break;
                     }
                 }
