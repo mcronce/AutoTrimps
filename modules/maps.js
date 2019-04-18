@@ -407,6 +407,13 @@ function autoMap() {
                         shouldDoMaps = true;
                         break;
                     }
+                    if(theMap.name == 'Imploding Star' && game.global.challengeActive == 'Devastation') {
+                        var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
+                        if (game.global.world < 170 + theMapDifficulty) continue;
+                        selectedMap = theMap.id;
+                        shouldDoMaps = true;
+                        break;
+                    }
                 }
             }
         }
