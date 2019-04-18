@@ -229,6 +229,12 @@ function autoMap() {
     enoughDamage = (ourBaseDamage * mapenoughdamagecutoff > enemyHealth);
     updateAutoMapsStatus();
 
+    if(game.global.challengeActive == 'Toxicity') {
+        if(game.global.world >= 160 && game.challenges.Toxicity.stacks < 1200) {
+            shouldFarm = true;
+        }
+    }
+
     //Farming
     var selectedMap = "world";
     var shouldFarmLowerZone = false;
