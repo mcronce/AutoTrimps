@@ -350,6 +350,8 @@ function initializeAllSettings() {
     createSetting('AdvMapSpecialModifier', 'Map Special Modifier', '<b>EXPERIMENTAL.</b> Attempt to select the BEST map special modifier. When starting a map for <b>Prestige</b> it will use <i>Prestigious</i>. When starting a map for <b>Farming</b> (for equipment) it will use your best metal cache. In any other case (such as farming for map stacks) it will use <i>Fast Attacks</i>. In all cases it uses the best modifier that can be afforded.', 'boolean', true, null, 'Maps');
     createSetting('scryvoidmaps', 'VM Scryer', 'Only use if you have Scryhard II, for er, obvious reasons. Works without the scryer options. ', 'boolean', false, null, 'Maps');
     createSetting('buywepsvoid', 'VM Buy Weps', 'Buys gear in Void maps regardless of your H:D ratio. Useful if you want to overkill as much as possible. ', 'boolean', false, null, 'Maps');
+    createSetting('map_tox_farm_zone', 'Tox farm Z', 'Starting at this zone in Toxicity challenge, farm Toxicity stacks to maximize Helium.', 'value', '160', null, 'Maps');
+    createSetting('map_tox_farm_stacks', 'Tox farm stacks', 'In Toxicity challenge, farm this many stacks starting at the specified zone.', 'value', '1200', null, 'Maps');
 
 
 
