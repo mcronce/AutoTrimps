@@ -231,7 +231,7 @@ function autoMap() {
 
     if(game.global.challengeActive == 'Toxicity') {
         var farm_zone = parseInt(getPageSetting('map_tox_farm_zone'));
-        if(game.global.world >= farm_zone)
+        if(game.global.world >= farm_zone) {
             if(game.challenge.Toxicity.stacks == 1500) {
                 shouldFarm = false;
             } else {
