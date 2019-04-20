@@ -230,8 +230,16 @@ function autoMap() {
     updateAutoMapsStatus();
 
     if(game.global.challengeActive == 'Toxicity') {
-        if(game.global.world >= parseInt(getPageSetting('map_tox_farm_zone')) && game.challenges.Toxicity.stacks < parseInt(getPageSetting('map_tox_farm_stacks'))) {
-            shouldFarm = true;
+        var farm_zone = parseInt(getPageSetting('map_tox_farm_zone'));
+        if(game.global.world >= farm_zone)
+            if(game.challenge.Toxicity.stacks == 1500) {
+                shouldFarm = false;
+            } else {
+                var target_stacks = parseInt(getPageSetting('map_tox_farm_stacks')) + (parseInt(getPageSetting('map_tox_farm_perzone')) * (game.global.world - farm_zone));
+                if(game.challenges.Toxicity.stacks < target_stacks) {
+                    shouldFarm = true;
+                }
+            }
         }
     }
 
