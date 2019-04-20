@@ -352,7 +352,7 @@ function initializeAllSettings() {
     createSetting('buywepsvoid', 'VM Buy Weps', 'Buys gear in Void maps regardless of your H:D ratio. Useful if you want to overkill as much as possible. ', 'boolean', false, null, 'Maps');
     createSetting('map_tox_farm_zone', 'Tox farm Z', 'Starting at this zone in Toxicity challenge, farm Toxicity stacks to maximize Helium.', 'value', '160', null, 'Maps');
     createSetting('map_tox_farm_stacks', 'Tox farm stacks', 'In Toxicity challenge, farm this many stacks starting at the specified zone.', 'value', '1200', null, 'Maps');
-
+    createSetting('map_tox_farm_perzone', 'Tox farm extra /Z', 'In Toxicity challenge, farm this many extra Tox stacks per zone above the starting farm zone', 'value', '0', null, 'Maps');
 
 
     //Spire
