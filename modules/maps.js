@@ -230,7 +230,7 @@ function autoMap() {
     updateAutoMapsStatus();
 
     if(game.global.challengeActive == 'Toxicity') {
-        if(game.global.world >= 160 && game.challenges.Toxicity.stacks < 1200) {
+        if(game.global.world >= parseInt(getPageSetting('map_tox_farm_zone')) && game.challenges.Toxicity.stacks < parseInt(getPageSetting('map_tox_farm_stacks'))) {
             shouldFarm = true;
         }
     }
