@@ -232,7 +232,7 @@ function autoMap() {
     if(game.global.challengeActive == 'Toxicity') {
         var farm_zone = parseInt(getPageSetting('map_tox_farm_zone'));
         if(game.global.world >= farm_zone) {
-            if(game.challenge.Toxicity.stacks == 1500) {
+            if(game.challenges.Toxicity.stacks == 1500) {
                 shouldFarm = false;
             } else {
                 var target_stacks = parseInt(getPageSetting('map_tox_farm_stacks')) + (parseInt(getPageSetting('map_tox_farm_perzone')) * (game.global.world - farm_zone));
