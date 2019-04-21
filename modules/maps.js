@@ -209,8 +209,12 @@ function autoMap() {
 
     if (getPageSetting('DisableFarm') >= 1) {
         shouldFarm = (calcHDratio() >= getPageSetting('DisableFarm'));
-        if (game.options.menu.repeatUntil.enabled == 1 && shouldFarm)
-            toggleSetting('repeatUntil');
+        if(shouldFarm) {
+            farm_reason = calcHDratio().toFixed(4) + 'x';
+            if(game.options.menu.repeatUntil.enabled == 1) {
+                toggleSetting('repeatUntil');
+            }
+        }
     }
     if (game.global.spireActive) {
         enemyDamage = calcSpire(99, game.global.gridArray[99].name, 'attack');
@@ -238,6 +242,7 @@ function autoMap() {
                 var target_stacks = parseInt(getPageSetting('map_tox_farm_stacks')) + (parseInt(getPageSetting('map_tox_farm_perzone')) * (game.global.world - farm_zone));
                 if(game.challenges.Toxicity.stacks < target_stacks) {
                     shouldFarm = true;
+                    farm_reason = 'Tox stacks (' + (target_stacks - game.challenges.Toxicity.stacks) + ')';
                 }
             }
         }
@@ -267,14 +272,23 @@ function autoMap() {
         }
         if (game.global.gridArray[99].nomStacks == customVars.NomFarmStacksCutoff[1]) {
             shouldFarm = (calcHDratio() > customVars.NomfarmingCutoff);
+            if(shouldFarm) {
+                farm_reason = calcHDratio() + 'x (Nom)';
+            }
             shouldDoMaps = true;
         }
         if (!game.global.mapsActive && game.global.gridArray[game.global.lastClearedCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
             shouldFarm = (calcHDratio() > customVars.NomfarmingCutoff);
+            if(shouldFarm) {
+                farm_reason = calcHDratio() + 'x (Nom)';
+            }
             shouldDoMaps = true;
         }
         if (game.global.mapsActive && game.global.mapGridArray[game.global.lastClearedMapCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
             shouldFarm = (calcHDratio() > customVars.NomfarmingCutoff);
+            if(shouldFarm) {
+                farm_reason = calcHDratio() + 'x (Nom)';
+            }
             shouldDoMaps = true;
             restartVoidMap = true;
         }
@@ -503,6 +517,10 @@ function autoMap() {
             }
             break;
         }
+    }
+
+    if(!shouldFarm) {
+        farm_reason = 'N/A';
     }
 
     //Automaps
