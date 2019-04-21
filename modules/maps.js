@@ -525,26 +525,25 @@ function autoMap() {
 
     if(needPrestige) {
         if(game.global.challengeActive == 'Daily') {
-            var even_bad = false;
-            var odd_bad = false;
+            var even_wt = 1;
+            var odd_wt = 1;
 
             if('slippery' in game.global.dailyChallenge && game.global.dailyChallenge.slippery) {
                 if(game.global.dailyChallenge.slippery.strength > 15) {
-                    even_bad = true;
+                    even_wt *= game.global.dailyChallenge.slippery.getMult();
                 } else {
-                    odd_bad = true;
+                    odd_wt *= game.global.dailyChallenge.slippery.getMult();
                 }
             } else if('oddTrimpNerf' in game.global.dailyChallenge && game.global.dailyChallenge.oddTrimpNerf) {
-                odd_bad = true;
+                odd_wt *= game.global.dailyChallenge.oddTrimpNerf.getMult();
             } else if('evenTrimpBuff' in game.global.dailyChallenge && game.global.dailyChallenge.evenTrimpBuff) {
-                odd_bad = true;
+                even_wt *= game.global.dailyChallenge.evenTrimpBuff.getMult();
             }
 
-            if(odd_bad && even_bad) {
-                // Fuck it, if they're both bad, ignore this whole thing
-            } else if(odd_bad && (game.global.world % 2 == 1)) {
+            // If odd_wt == even_wt, no sense messing with it
+            if(odd_wt < even_wt && (game.global.world % 2 == 1)) {
                 needPrestige = false;
-            } else if(even_bad && (game.global.world % 2 == 0)) {
+            } else if(odd_wt > even_wt && (game.global.world % 2 == 0)) {
                 needPrestige = false;
             }
         }
