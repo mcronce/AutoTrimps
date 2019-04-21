@@ -523,6 +523,34 @@ function autoMap() {
         farm_reason = 'N/A';
     }
 
+    if(needPrestige) {
+        if(game.global.challengeActive == 'Daily') {
+            var even_bad = false;
+            var odd_bad = false;
+
+            if('slippery' in game.global.dailyChallenge && game.global.dailyChallenge.slippery) {
+                if(game.global.dailyChallenge.slippery.strength > 15) {
+                    even_bad = true;
+                } else {
+                    odd_bad = true;
+                }
+            } else if('oddTrimpNerf' in game.global.dailyChallenge && game.global.dailyChallenge.oddTrimpNerf) {
+                odd_bad = true;
+            } else if('evenTrimpBuff' in game.global.dailyChallenge && game.global.dailyChallenge.evenTrimpBuff) {
+                odd_bad = true;
+            }
+
+            if(odd_bad && even_bad) {
+                // Fuck it, if they're both bad, ignore this whole thing
+            } else if(odd_bad && (game.global.world % 2 == 1)) {
+                needPrestige = false;
+            } else if(even_bad && (game.global.world % 2 == 0)) {
+                needPrestige = false;
+            }
+        }
+    }
+
+
     //Automaps
     if (shouldDoMaps || doVoids || needPrestige) {
         if (selectedMap == "world") {
