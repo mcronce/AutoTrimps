@@ -530,14 +530,14 @@ function autoMap() {
 
             if('slippery' in game.global.dailyChallenge && game.global.dailyChallenge.slippery) {
                 if(game.global.dailyChallenge.slippery.strength > 15) {
-                    even_wt *= game.global.dailyChallenge.slippery.getMult();
+                    even_wt *= dailyModifiers.slippery.getMult(game.global.dailyChallenge.slippery.strength);
                 } else {
-                    odd_wt *= game.global.dailyChallenge.slippery.getMult();
+                    odd_wt *= dailyModifiers.slippery.getMult(game.global.dailyChallenge.slippery.strength);
                 }
             } else if('oddTrimpNerf' in game.global.dailyChallenge && game.global.dailyChallenge.oddTrimpNerf) {
-                odd_wt *= game.global.dailyChallenge.oddTrimpNerf.getMult();
+                odd_wt *= dailyModifiers.oddTrimpNerf.getMult(game.global.dailyChallenge.oddTrimpNerf.strength);
             } else if('evenTrimpBuff' in game.global.dailyChallenge && game.global.dailyChallenge.evenTrimpBuff) {
-                even_wt *= game.global.dailyChallenge.evenTrimpBuff.getMult();
+                even_wt *= dailyModifiers.evenTrimpBuff.getMult(game.global.dailyChallenge.evenTrimpBuff.strength);
             }
 
             // If odd_wt == even_wt, no sense messing with it
@@ -548,7 +548,6 @@ function autoMap() {
             }
         }
     }
-
 
     //Automaps
     if (shouldDoMaps || doVoids || needPrestige) {
