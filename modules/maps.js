@@ -519,34 +519,39 @@ function autoMap() {
         }
     }
 
-    if(!shouldFarm) {
-        farm_reason = 'N/A';
+    if(game.global.challengeActive == 'Daily') {
+        var do_maps_this_zone = true;
+        var even_wt = 1;
+        var odd_wt = 1;
+
+        if('slippery' in game.global.dailyChallenge && game.global.dailyChallenge.slippery) {
+            if(game.global.dailyChallenge.slippery.strength > 15) {
+                even_wt *= dailyModifiers.slippery.getMult(game.global.dailyChallenge.slippery.strength);
+            } else {
+                odd_wt *= dailyModifiers.slippery.getMult(game.global.dailyChallenge.slippery.strength);
+            }
+        } else if('oddTrimpNerf' in game.global.dailyChallenge && game.global.dailyChallenge.oddTrimpNerf) {
+            odd_wt *= dailyModifiers.oddTrimpNerf.getMult(game.global.dailyChallenge.oddTrimpNerf.strength);
+        } else if('evenTrimpBuff' in game.global.dailyChallenge && game.global.dailyChallenge.evenTrimpBuff) {
+            even_wt *= dailyModifiers.evenTrimpBuff.getMult(game.global.dailyChallenge.evenTrimpBuff.strength);
+        }
+
+        // If odd_wt == even_wt, no sense messing with it
+        if(odd_wt < even_wt && (game.global.world % 2 == 1)) {
+            do_maps_this_zone = false;
+        } else if(odd_wt > even_wt && (game.global.world % 2 == 0)) {
+            do_maps_this_zone = false;
+        }
+
+        if(!do_maps_this_zone) {
+            shouldFarm = false;
+            doVoids = false;
+            needPrestige = false;
+        }
     }
 
-    if(needPrestige) {
-        if(game.global.challengeActive == 'Daily') {
-            var even_wt = 1;
-            var odd_wt = 1;
-
-            if('slippery' in game.global.dailyChallenge && game.global.dailyChallenge.slippery) {
-                if(game.global.dailyChallenge.slippery.strength > 15) {
-                    even_wt *= dailyModifiers.slippery.getMult(game.global.dailyChallenge.slippery.strength);
-                } else {
-                    odd_wt *= dailyModifiers.slippery.getMult(game.global.dailyChallenge.slippery.strength);
-                }
-            } else if('oddTrimpNerf' in game.global.dailyChallenge && game.global.dailyChallenge.oddTrimpNerf) {
-                odd_wt *= dailyModifiers.oddTrimpNerf.getMult(game.global.dailyChallenge.oddTrimpNerf.strength);
-            } else if('evenTrimpBuff' in game.global.dailyChallenge && game.global.dailyChallenge.evenTrimpBuff) {
-                even_wt *= dailyModifiers.evenTrimpBuff.getMult(game.global.dailyChallenge.evenTrimpBuff.strength);
-            }
-
-            // If odd_wt == even_wt, no sense messing with it
-            if(odd_wt < even_wt && (game.global.world % 2 == 1)) {
-                needPrestige = false;
-            } else if(odd_wt > even_wt && (game.global.world % 2 == 0)) {
-                needPrestige = false;
-            }
-        }
+    if(!shouldFarm) {
+        farm_reason = 'N/A';
     }
 
     //Automaps
