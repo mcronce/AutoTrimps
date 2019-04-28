@@ -118,6 +118,7 @@ function useScryerStance() {
     var valid_max = max_zone <= 0 || game.global.world < max_zone;
 
     if(getPageSetting('ScryerUseinMaps2') == 3 && game.global.mapActive) {
+        autostancefunction();
         wantToScry = false;
         return;
     }
