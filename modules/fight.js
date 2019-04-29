@@ -108,7 +108,7 @@ function betterAutoFight2() {
     var addTime = adjustedMax / tps;
     var lowLevelFight = (adjustedMax < 0.5 * breeding) && (breeding > 0.1 * game.resources.trimps.realMax());
     if (game.global.SpireActive){
-        if((game.global.lastBreedtime/1000)>=targetBreed && (game.global.lastBreedtime/1000)>=breedTimerLimit) {
+        if((game.global.lastBreedtime / 1000) >= targetBreed && (game.global.lastBreedtime / 1000) >= breedTimerLimit) {
             fightMaybe();
         }
     } else if (game.global.soldierHealth > 0 && getPageSetting('AutoMaps') == 1) {
