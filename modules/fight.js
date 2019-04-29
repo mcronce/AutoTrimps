@@ -106,7 +106,7 @@ function betterAutoFight2() {
     var potencyMod = getPotencyMod();
     var tps = breeding * potencyMod;
     var addTime = adjustedMax / tps;
-    var lowLevelFight = game.resources.trimps.maxSoldiers < 0.5*breeding && breeding > 0.1*game.resources.trimps.realMax();
+    var lowLevelFight = (adjustedMax < 0.5 * breeding) && (breeding > 0.1 * game.resources.trimps.realMax());
     if (game.global.SpireActive){
         if((game.global.lastBreedtime/1000)>=targetBreed && (game.global.lastBreedtime/1000)>=breedTimerLimit) {
             fightMaybe();
