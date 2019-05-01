@@ -445,14 +445,14 @@ function calcEnemyHealth() {
     }
     // TODO:  Maybe calculate level based on other factors, like whether or not we want to do void maps this zone
     var level = game.global.world;
-    var worst_imp = game.badGuys[game.global.gridArray[0].name];
+    var worst_imp = 'Snimp';
     for(var i in game.global.gridArray) {
-        var bad_guy = game.badGuys[game.global.gridArray[i]].name;
-        if(bad_guy.health > worst_imp.health) {
+        var bad_guy = game.global.gridArray[i].name;
+        if(game.badGuys[bad_guy].health > worst_imp.health) {
             worst_imp = bad_guy;
         }
     }
-    var health = calcEnemyBaseHealth(game.global.world, level, worst_imp.name);
+    var health = calcEnemyBaseHealth(game.global.world, level, worst_imp);
     var corrupt = mutations.Corruption.active();
     var healthy = mutations.Healthy.active();
     if (corrupt && !healthy) {
