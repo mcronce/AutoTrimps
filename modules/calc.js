@@ -474,26 +474,19 @@ function calcEnemyHealth() {
         var zoneModifier = Math.floor(game.global.world / game.challenges[game.global.challengeActive].zoneScaleFreq);
         oblitMult *= Math.pow(game.challenges[game.global.challengeActive].zoneScaling, zoneModifier);
         health *= oblitMult;
-    }
-    if (game.global.challengeActive == "Coordinate") {
+    } else if (game.global.challengeActive == "Coordinate") {
         health *= getBadCoordLevel();
-    }
-    if (game.global.challengeActive == "Toxicity") {
+    } else if (game.global.challengeActive == "Toxicity") {
         health *= 2;
-    }
-    if (game.global.challengeActive == 'Lead') {
+    } else if (game.global.challengeActive == 'Lead') {
         health *= (1 + (game.challenges.Lead.stacks * 0.04));
-    }
-    if (game.global.challengeActive == 'Balance') {
+    } else if (game.global.challengeActive == 'Balance') {
         health *= 2;
-    }
-    if (game.global.challengeActive == 'Meditate') {
+    } else if (game.global.challengeActive == 'Meditate') {
         health *= 2;
-    }
-    if (game.global.challengeActive == 'Life') {
+    } else if (game.global.challengeActive == 'Life') {
         health *= 10;
-    }
-    if (game.global.challengeActive == "Domination") {
+    } else if (game.global.challengeActive == "Domination") {
         health *= 7.5;
     }
     return health;
