@@ -2,9 +2,9 @@ MODULES.maps={},MODULES.maps.numHitsSurvived=8,MODULES.maps.LeadfarmingCutoff=10
 var doVoids=!1,needToVoid=!1,needPrestige=!1,skippedPrestige=!1,scryerStuck=!1,shouldDoMaps=!1,mapTimeEstimate=0,lastMapWeWereIn=null,preSpireFarming=!1,spireMapBonusFarming=!1,spireTime=0,doMaxMapBonus=!1,vanillaMapatZone=!1,additionalCritMulti=2<getPlayerCritChance()?25:5;
 
 function updateAutoMapsStatus(get) {
-
     var status;
     var minSp = getPageSetting('MinutestoFarmBeforeSpire');
+    var hdratio = calcHDratio().toFixed(4);
 
     //Fail Safes
     if (getPageSetting('AutoMaps') == 0) status = 'Off';
@@ -28,9 +28,9 @@ function updateAutoMapsStatus(get) {
     else if (!game.global.mapsUnlocked) status = '&nbsp;';
     else if (needPrestige && !doVoids) status = 'Prestige';
     else if (doVoids) status = 'Void Maps: ' + game.global.totalVoidMaps + ' remaining';
-    else if (shouldFarm && !doVoids) status = 'Farming: ' + calcHDratio().toFixed(4) + 'x';
+    else if (shouldFarm && !doVoids) status = 'Farming: ' + hdratio + 'x';
     else if (!enoughHealth && !enoughDamage) status = 'Want Health & Damage';
-    else if (!enoughDamage) status = 'Want ' + calcHDratio().toFixed(4) + 'x &nbspmore damage';
+    else if (!enoughDamage) status = 'Want ' + hdratio + 'x &nbspmore damage';
     else if (!enoughHealth) status = 'Want more health';
     else if (enoughHealth && enoughDamage) status = 'Advancing';
 
@@ -93,7 +93,6 @@ function testMapSpecialModController() {
 }
 
 function autoMap() {
-
     //Failsafes
     if (!game.global.mapsUnlocked || calcOurDmg("avg", false, true) <= 0) {
         enoughDamage = true;
@@ -106,6 +105,8 @@ function autoMap() {
         updateAutoMapsStatus();
         return;
     }
+
+    var hdratio = calcHDratio();
 
     //WS
     var mapenoughdamagecutoff = getPageSetting("mapcuntoff");
@@ -208,9 +209,9 @@ function autoMap() {
     var enemyHealth = calcEnemyHealth();
 
     if (getPageSetting('DisableFarm') >= 1) {
-        shouldFarm = (calcHDratio() >= getPageSetting('DisableFarm'));
+        shouldFarm = (hdratio >= getPageSetting('DisableFarm'));
         if(shouldFarm) {
-            farm_reason = calcHDratio().toFixed(4) + 'x';
+            farm_reason = hdratio.toFixed(4) + 'x';
             if(game.options.menu.repeatUntil.enabled == 1) {
                 toggleSetting('repeatUntil');
             }
@@ -271,23 +272,23 @@ function autoMap() {
                 shouldDoMaps = true;
         }
         if (game.global.gridArray[99].nomStacks == customVars.NomFarmStacksCutoff[1]) {
-            shouldFarm = (calcHDratio() > customVars.NomfarmingCutoff);
+            shouldFarm = (hdratio > customVars.NomfarmingCutoff);
             if(shouldFarm) {
-                farm_reason = calcHDratio() + 'x (Nom)';
+                farm_reason = hdratio.toFixed(4) + 'x (Nom)';
             }
             shouldDoMaps = true;
         }
         if (!game.global.mapsActive && game.global.gridArray[game.global.lastClearedCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
-            shouldFarm = (calcHDratio() > customVars.NomfarmingCutoff);
+            shouldFarm = (hdratio > customVars.NomfarmingCutoff);
             if(shouldFarm) {
-                farm_reason = calcHDratio() + 'x (Nom)';
+                farm_reason = hdratio.toFixed(4) + 'x (Nom)';
             }
             shouldDoMaps = true;
         }
         if (game.global.mapsActive && game.global.mapGridArray[game.global.lastClearedMapCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
-            shouldFarm = (calcHDratio() > customVars.NomfarmingCutoff);
+            shouldFarm = (hdratio > customVars.NomfarmingCutoff);
             if(shouldFarm) {
-                farm_reason = calcHDratio() + 'x (Nom)';
+                farm_reason = hdratio.toFixed(4) + 'x (Nom)';
             }
             shouldDoMaps = true;
             restartVoidMap = true;
