@@ -438,6 +438,9 @@ function calcEnemyBaseHealth(zone, level, name) {
 }
 
 function calcEnemyHealth() {
+    if(game.global.spireActive) {
+        return calcSpire(99, game.global.gridArray[99].name, 'health');
+    }
     // TODO:  Maybe calculate level based on other factors, like whether or not we want to do void maps this zone
     var level = game.global.world;
     var worst_imp = game.badGuys[game.global.gridArray[0].name];
