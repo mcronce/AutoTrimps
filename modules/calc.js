@@ -436,6 +436,10 @@ function calcEnemyBaseHealth(zone, level, name) {
 }
 
 function calcEnemyHealth() {
+    if(game.global.gridArray.length == 0) {
+        // Short circuit, in case fighting isn't enabled yet
+        return 1;
+    }
     if(game.global.spireActive) {
         return calcSpire(99, game.global.gridArray[99].name, 'health');
     }
