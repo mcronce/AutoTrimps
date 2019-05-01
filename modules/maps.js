@@ -92,8 +92,32 @@ function testMapSpecialModController() {
     }
 }
 
-function autoMap() {
+function shouldVoidThisZone() {
+    var voidMapLevelSetting = 0;
+    var voidMapLevelPlus = 0;
+    if (game.global.challengeActive != "Daily" && getPageSetting('VoidMaps') > 0) {
+        voidMapLevelSetting = getPageSetting('VoidMaps');
+    }
+    if (game.global.challengeActive == "Daily" && getPageSetting('DailyVoidMod') >= 1) {
+        voidMapLevelSetting = getPageSetting('DailyVoidMod');
+    }
+    if (getPageSetting('RunNewVoidsUntilNew') != 0 && game.global.challengeActive != "Daily") {
+        voidMapLevelPlus = getPageSetting('RunNewVoidsUntilNew');
+    }
+    if (getPageSetting('dRunNewVoidsUntilNew') != 0 && game.global.challengeActive == "Daily") {
+        voidMapLevelPlus = getPageSetting('dRunNewVoidsUntilNew');
+    }
+    return (
+        voidMapLevelSetting > 0 &&
+        game.global.totalVoidMaps > 0 && (
+            (game.global.world == voidMapLevelSetting) ||
+            (voidMapLevelPlus < 0 && game.global.world >= voidMapLevelSetting) ||
+            (voidMapLevelPlus > 0 && game.global.world >= voidMapLevelSetting && game.global.world <= (voidMapLevelSetting + voidMapLevelPlus))
+        )
+    );
+}
 
+function autoMap() {
     //Failsafes
     if (!game.global.mapsUnlocked || calcOurDmg("avg", false, true) <= 0) {
         enoughDamage = true;
@@ -127,29 +151,8 @@ function autoMap() {
     var extraMapLevels = getPageSetting('AdvMapSpecialModifier') ? getExtraMapLevels() : 0;
 
     //Void Vars
-    var voidMapLevelSetting = 0;
     var voidMapLevelSettingCell = 70;
-    var voidMapLevelPlus = 0;
-    if (game.global.challengeActive != "Daily" && getPageSetting('VoidMaps') > 0) {
-        voidMapLevelSetting = getPageSetting('VoidMaps');
-    }
-    if (game.global.challengeActive == "Daily" && getPageSetting('DailyVoidMod') >= 1) {
-        voidMapLevelSetting = getPageSetting('DailyVoidMod');
-    }
-    if (getPageSetting('RunNewVoidsUntilNew') != 0 && game.global.challengeActive != "Daily") {
-	voidMapLevelPlus = getPageSetting('RunNewVoidsUntilNew');
-    }
-    if (getPageSetting('dRunNewVoidsUntilNew') != 0 && game.global.challengeActive == "Daily") {
-	voidMapLevelPlus = getPageSetting('dRunNewVoidsUntilNew');
-    }
-	
-    needToVoid = (voidMapLevelSetting > 0 && game.global.totalVoidMaps > 0 && game.global.lastClearedCell + 1 >= voidMapLevelSettingCell &&
-			(
-			 (game.global.world == voidMapLevelSetting) || 
-			 (voidMapLevelPlus < 0 && game.global.world >= voidMapLevelSetting) ||
-			 (voidMapLevelPlus > 0 && game.global.world >= voidMapLevelSetting && game.global.world <= (voidMapLevelSetting + voidMapLevelPlus))
-			)
-		 );
+    needToVoid = shouldVoidThisZone() && game.global.lastClearedCell + 1 >= voidMapLevelSettingCell;
 			
     var voidArrayDoneS = [];
     if (game.global.challengeActive != "Daily" && getPageSetting('onlystackedvoids') == true) {
