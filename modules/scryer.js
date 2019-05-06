@@ -1,7 +1,7 @@
 var wantToScry = false;
 function useScryerStance() {
     var scry = 4;
-    if (game.global.uberNature == "Wind") {
+    if (game.global.uberNature == "Wind" && getEmpowerment() != "Wind") {
         scry = 5;
     }
 
@@ -9,9 +9,9 @@ function useScryerStance() {
     function autostancefunction() {
         if ((getPageSetting('AutoStance') == 3) || (getPageSetting('use3daily') == true && game.global.challengeActive == "Daily")) {
             windStance();
-        } else if (AutoStance==1) {
+        } else if (AutoStance == 1) {
             autoStance();
-        } else if (AutoStance==2) {
+        } else if (AutoStance == 2) {
             autoStance2();
         }
     }

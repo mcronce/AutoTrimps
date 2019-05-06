@@ -18,8 +18,8 @@ function updateAutoMapsStatus(get) {
     else if (preSpireFarming) {
         var secs = Math.floor(60 - (spireTime * 60) % 60).toFixed(0);
         var mins = Math.floor(minSp - spireTime).toFixed(0);
-        var hours = minSp - (spireTime / 60).toFixed(2);
-        var spiretimeStr = (spireTime >= 60) ?
+        var hours = ((minSp - spireTime) / 60).toFixed(2);
+        var spiretimeStr = (minSp - spireTime >= 60) ?
             (hours + 'h') : (mins + 'm:' + (secs >= 10 ? secs : ('0' + secs)) + 's');
         status = 'Farming for Spire ' + spiretimeStr + ' left';
     } else if (spireMapBonusFarming) status = 'Getting Spire Map Bonus';
@@ -28,6 +28,10 @@ function updateAutoMapsStatus(get) {
     else if (!game.global.mapsUnlocked) status = '&nbsp;';
     else if (needPrestige && !doVoids) status = 'Prestige';
     else if (doVoids) status = 'Void Maps: ' + game.global.totalVoidMaps + ' remaining';
+    else if (doVoids) {
+        var stackedMaps = Fluffy.isRewardActive('void') ? countStackedVoidMaps() : 0;
+        status = 'Void Maps: ' + game.global.totalVoidMaps + ((stackedMaps) ? " (" + stackedMaps + " stacked)" : "") + ' remaining';
+    }
     else if (shouldFarm && !doVoids) status = 'Farming: ' + hdratio + 'x';
     else if (!enoughHealth && !enoughDamage) status = 'Want Health & Damage';
     else if (!enoughDamage) status = 'Want ' + hdratio + 'x &nbspmore damage';
