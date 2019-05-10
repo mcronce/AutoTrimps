@@ -443,6 +443,7 @@ function calcEnemyHealth() {
     if(game.global.spireActive) {
         return calcSpire(99, game.global.gridArray[99].name, 'health');
     }
+
     var worst_imp = 'Snimp';
     for(var i in game.global.gridArray) {
         var bad_guy = game.global.gridArray[i].name;
@@ -451,6 +452,20 @@ function calcEnemyHealth() {
         }
     }
     var health = calcEnemyBaseHealth(game.global.world, 100, worst_imp);
+
+    if(shouldVoidThisZone()) {
+        for(var i in game.global.mapsOwnedArray) {
+            var map = game.global.mapsOwnedArray[i];
+            if(map.location != "Void") {
+                continue;
+            }
+            var this_map_health = calcEnemyBaseHealth(game.global.world, map.size, 'Cthulimp') * map.difficulty;
+            if(this_map_health > health) {
+                health = this_map_health;
+            }
+        }
+    }
+
     var corrupt = mutations.Corruption.active();
     var healthy = mutations.Healthy.active();
     if (corrupt && !healthy) {
