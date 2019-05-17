@@ -99,13 +99,9 @@ function betterAutoFight2() {
     if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done) {
         return;
     }
-    var spireBreed = getPageSetting('SpireBreedTimer');
     var breeding = (game.resources.trimps.owned - game.resources.trimps.employed);
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
     var adjustedMax = (game.portal.Coordinated.level) ? game.portal.Coordinated.currentSend : trimps.maxSoldiers;
-    var potencyMod = getPotencyMod();
-    var tps = breeding * potencyMod;
-    var addTime = adjustedMax / tps;
     var lowLevelFight = (adjustedMax < 0.5 * breeding) && (breeding > 0.1 * game.resources.trimps.realMax());
     if (game.global.SpireActive){
         if((game.global.lastBreedtime / 1000) >= targetBreed && (game.global.lastBreedtime / 1000) >= breedTimerLimit) {
@@ -113,8 +109,7 @@ function betterAutoFight2() {
         }
     } else if (game.global.soldierHealth > 0 && getPageSetting('AutoMaps') == 1) {
         fightMaybe();
-    }
-    if (newSquadRdy || lowLevelFight || game.global.challengeActive == 'Watch') {
+    } else if (newSquadRdy || lowLevelFight || game.global.challengeActive == 'Watch') {
         fightMaybe();
     }
 }
