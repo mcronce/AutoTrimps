@@ -227,8 +227,7 @@ function shouldBuyNurseries() {
     was_fighting_last_tick = game.global.fighting;
     if(stopped_fighting && fights_since_nurseries_finished >= 2) {
         if(getBreedTime(true) > 1) {
-            // TODO:  Is 50 the right number?
-            var buy = Math.floor(getBreedTime(true) * 50);
+            var buy = Math.floor(getBreedTime(true) * 10);
             if(buy > 0) {
                 fights_since_nurseries_finished = 0;
             }
