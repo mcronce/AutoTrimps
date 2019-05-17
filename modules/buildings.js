@@ -164,6 +164,41 @@ function buyGemEfficientHousing() {
     }
 }
 
+function shouldBuyNurseries() {
+    if(game.buildings.Nursery.locked) {
+        return false;
+    }
+    // "hidebuild" from buyBuildings()
+    if(getPageSetting('BuyBuildingsNew') === 0 && getPageSetting('hidebuildings') == true) {
+        return false;
+    }
+    if(getBuildingItemPrice(game.buildings.Nursery, 'gems', false, 1) > 0.01 * game.resources.gems.owned) {
+        return false;
+    }
+    if(getBuildingItemPrice(game.buildings.Nursery, 'wood', false, 1) > 0.01 * game.resources.wood.owned) {
+        return false;
+    }
+    if(getBuildingItemPrice(game.buildings.Nursery, 'metal', false, 1) > 0.01 * game.resources.metal.owned) {
+        return false;
+    }
+    // No need to check if the setting is >0 because game.global.world can't possibly be <1
+    if(game.global.world < getPageSetting('NoNurseriesUntil')) {
+        return false;
+    }
+    if(getPageSetting('MaxNursery') > -1 && game.buildings.Nursery.owned >= getPageSetting('MaxNursery')) {
+        return false;
+    }
+    // Skip checks for whether or not we're in a Daily challenge; that's taken care of by isActiveSpireAT() and disActiveSpireAT()
+    if(isActiveSpireAT() && getPageSetting('PreSpireNurseries') <= game.buildings.Nursery.owned) {
+        return false;
+    }
+    if(disActiveSpireAT() && getPageSetting('dPreSpireNurseries') <= game.buildings.Nursery.owned) {
+        return false;
+    }
+
+    return true;
+}
+
 function buyBuildings() {
     if ((game.jobs.Miner.locked && game.global.challengeActive != 'Metal') || (game.jobs.Scientist.locked && game.global.challengeActive != "Scientist")) return;
     var customVars = MODULES["buildings"];
@@ -209,16 +244,7 @@ function buyBuildings() {
         safeBuyBuilding('Tribute');
     }
     //Nurseries
-    if (
-        game.buildings.Nursery.locked == 0 &&
-        getBuildingItemPrice(game.buildings.Nursery, 'gems', false, 1) < 0.01 * game.resources.gems.owned &&
-        getBuildingItemPrice(game.buildings.Nursery, 'wood', false, 1) < 0.01 * game.resources.wood.owned &&
-        getBuildingItemPrice(game.buildings.Nursery, 'metal', false, 1) < 0.01 * game.resources.metal.owned && (
-            (!hidebuild &&( game.global.world >= getPageSetting('NoNurseriesUntil') || getPageSetting('NoNurseriesUntil') < 1) && (getPageSetting('MaxNursery') > game.buildings.Nursery.owned || getPageSetting('MaxNursery') == -1)) ||
-            (game.global.challengeActive != "Daily" && getPageSetting('PreSpireNurseries') > game.buildings.Nursery.owned && isActiveSpireAT()) ||
-            (game.global.challengeActive == "Daily" && getPageSetting('dPreSpireNurseries') > game.buildings.Nursery.owned && disActiveSpireAT())
-        )
-    ) {
+    if(shouldBuyNurseries()) {
         safeBuyBuilding('Nursery');
     }
 
