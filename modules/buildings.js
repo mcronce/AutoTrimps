@@ -183,19 +183,21 @@ function shouldBuyNurseries() {
     if(getBuildingItemPrice(game.buildings.Nursery, 'metal', false, 1) > 0.01 * game.resources.metal.owned) {
         return 0;
     }
-    // No need to check if the setting is >0 because game.global.world can't possibly be <1
-    if(game.global.world < getPageSetting('NoNurseriesUntil')) {
-        return 0;
-    }
-    if(getPageSetting('MaxNursery') > -1 && game.buildings.Nursery.owned >= getPageSetting('MaxNursery')) {
-        return 0;
-    }
+
     // Skip checks for whether or not we're in a Daily challenge; that's taken care of by isActiveSpireAT() and disActiveSpireAT()
     if(isActiveSpireAT() && getPageSetting('PreSpireNurseries') > game.buildings.Nursery.owned) {
         return 1;
     }
     if(disActiveSpireAT() && getPageSetting('dPreSpireNurseries') > game.buildings.Nursery.owned) {
         return 1;
+    }
+
+    // No need to check if the setting is >0 because game.global.world can't possibly be <1
+    if(game.global.world < getPageSetting('NoNurseriesUntil')) {
+        return 0;
+    }
+    if(getPageSetting('MaxNursery') > -1 && game.buildings.Nursery.owned >= getPageSetting('MaxNursery')) {
+        return 0;
     }
 
     if(!getPageSetting('DynamicNursery')) {
