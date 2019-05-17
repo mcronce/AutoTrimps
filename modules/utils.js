@@ -104,14 +104,3 @@ function formatMinutesForDescriptions(a){var b,c=Math.floor(60*a%60),d=Math.floo
 window.onerror=function(b,c,d,e,f){var g=['Message: '+b,'URL: '+c,'Line: '+d,'Column: '+e,'Error object: '+JSON.stringify(f)].join(' - ');0!=d&&console.log('AT logged error: '+g)};
 function throwErrorfromModule(){throw new Error("We have successfully read the thrown error message out of a module")}
 
-function getRemainingBreedTime() {
-    if(game.resources.trimps.owned >= game.resources.trimps.realMax()) {
-        return 0;
-    }
-    var breeding = (game.resources.trimps.owned - game.resources.trimps.employed);
-    var remaining = game.resources.trimps.realMax() - breeding;
-    var tps = breeding * getPotencyMod();
-    // TODO:  Make this take the exponential nature of breed timing into account
-    return remaining / tps;
-}
-
