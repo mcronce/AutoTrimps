@@ -335,15 +335,19 @@ function calcDailyAttackMod(number) {
     return number;
 }
 
-function calcSpire(cell, name, what) {
-    var exitCell = cell;
+function spire_get_exit_cell() {
     if (game.global.challengeActive != "Daily" && isActiveSpireAT() && getPageSetting('ExitSpireCell') > 0 && getPageSetting('ExitSpireCell') <= 100) {
-        exitCell = (getPageSetting('ExitSpireCell') - 1);
+        return (getPageSetting('ExitSpireCell') - 1);
     }
     if (game.global.challengeActive == "Daily" && disActiveSpireAT() && getPageSetting('dExitSpireCell') > 0 && getPageSetting('dExitSpireCell') <= 100) {
-        exitCell = (getPageSetting('dExitSpireCell') - 1);
+        return (getPageSetting('dExitSpireCell') - 1);
     }
-    var enemy = cell == 99 ? (exitCell == 99 ? game.global.gridArray[99].name : "Snimp") : name;
+    return 99;
+}
+
+function calcSpire(cell, what) {
+    var exitCell = spire_get_exit_cell();
+    var enemy = game.global.gridArray[cell].name;
     var base = (what == "attack") ? game.global.getEnemyAttack(exitCell, enemy, false) : (calcEnemyBaseHealth(game.global.world, exitCell, enemy) * 2);
     var mod = (what == "attack") ? 1.17 : 1.14;
     var spireNum = Math.floor((game.global.world-100)/100);
@@ -440,9 +444,6 @@ function calcEnemyHealth() {
         // Short circuit, in case fighting isn't enabled yet
         return 1;
     }
-    if(game.global.spireActive) {
-        return calcSpire(99, game.global.gridArray[99].name, 'health');
-    }
 
     var worst_imp = 'Snimp';
     for(var i in game.global.gridArray) {
@@ -451,7 +452,16 @@ function calcEnemyHealth() {
             worst_imp = bad_guy;
         }
     }
-    var health = calcEnemyBaseHealth(game.global.world, 100, worst_imp);
+
+    var cell = 100;
+    if(game.global.spireActive) {
+        cell = spire_get_exit_cell();
+    }
+
+    var health = calcEnemyBaseHealth(game.global.world, cell, worst_imp);
+    if(game.global.spireActive) {
+        health = health * 1.17
+    }
 
     if(shouldVoidThisZone()) {
         for(var i in game.global.mapsOwnedArray) {
