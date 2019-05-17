@@ -164,7 +164,7 @@ function buyGemEfficientHousing() {
     }
 }
 
-var fights_since_last_buy = 0;
+var fights_since_nurseries_finished = 0;
 var was_fighting_last_tick = false;
 function shouldBuyNurseries() {
     if(game.buildings.Nursery.locked) {
@@ -211,17 +211,26 @@ function shouldBuyNurseries() {
     } else if(game.global.fighting && !was_fighting_last_tick) {
         started_fighting = true;
         if(game.buildings.Nursery.owned > 0) {
-            fights_since_last_buy++;
+            var nursery_in_queue = false;
+            for(var i = 0; i < game.global.buildingsQueue.length; i++) {
+                if(game.global.buildingsQueue[i].startsWith("Nursery")) {
+                    nursery_in_queue = true;
+                    break;
+                }
+            }
+            if(!nursery_in_queue) {
+                fights_since_nurseries_finished++;
+            }
         }
     }
 
     was_fighting_last_tick = game.global.fighting;
-    if(stopped_fighting && fights_since_last_buy >= 2) {
+    if(stopped_fighting && fights_since_nurseries_finished >= 2) {
         if(getBreedTime(true) > 1) {
             // TODO:  Is 50 the right number?
             var buy = Math.floor(getBreedTime(true) * 50);
             if(buy > 0) {
-                fights_since_last_buy = 0;
+                fights_since_nurseries_finished = 0;
             }
             return buy;
         }
