@@ -109,9 +109,9 @@ function getRemainingBreedTime() {
         return 0;
     }
     var breeding = (game.resources.trimps.owned - game.resources.trimps.employed);
-    var adjustedMax = (game.portal.Coordinated.level) ? game.portal.Coordinated.currentSend : trimps.maxSoldiers;
+    var remaining = game.resources.trimps.realMax() - breeding;
     var tps = breeding * getPotencyMod();
     // TODO:  Make this take the exponential nature of breed timing into account
-    return adjustedMax / tps;
+    return remaining / tps;
 }
 
