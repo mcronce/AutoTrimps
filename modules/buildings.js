@@ -218,9 +218,12 @@ function shouldBuyNurseries() {
     was_fighting_last_tick = game.global.fighting;
     if(stopped_fighting && fights_since_last_buy >= 2) {
         if(game.global.breedTime > 1) {
-            fights_since_last_buy = 0;
             // TODO:  Is 50 the right number?
-            return Math.floor(getBreedTime(true) * 50);
+            var buy = Math.floor(getBreedTime(true) * 50);
+            if(buy > 0) {
+                fights_since_last_buy = 0;
+            }
+            return buy;
         }
     }
 
