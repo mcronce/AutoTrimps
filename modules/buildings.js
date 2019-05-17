@@ -191,11 +191,11 @@ function shouldBuyNurseries() {
         return 0;
     }
     // Skip checks for whether or not we're in a Daily challenge; that's taken care of by isActiveSpireAT() and disActiveSpireAT()
-    if(isActiveSpireAT() && getPageSetting('PreSpireNurseries') <= game.buildings.Nursery.owned) {
-        return 0;
+    if(isActiveSpireAT() && getPageSetting('PreSpireNurseries') > game.buildings.Nursery.owned) {
+        return 1;
     }
-    if(disActiveSpireAT() && getPageSetting('dPreSpireNurseries') <= game.buildings.Nursery.owned) {
-        return 0;
+    if(disActiveSpireAT() && getPageSetting('dPreSpireNurseries') > game.buildings.Nursery.owned) {
+        return 1;
     }
 
     if(!getPageSetting('DynamicNursery')) {
