@@ -523,13 +523,16 @@ function calcHDratio() {
 function calcCurrentStance() {
     var ratio = calcHDratio()
     if (
-        game.global.uberNature == "Wind" && getEmpowerment() == "Wind" && !game.global.mapsActive && (
-            (game.global.challengeActive != "Daily" && ratio < getPageSetting('WindStackingMinHD')) ||
-            (game.global.challengeActive == "Daily" && ratio < getPageSetting('dWindStackingMinHD'))
-        ) && (
-            (game.global.challengeActive != "Daily" && game.global.world >= getPageSetting('WindStackingMin')) ||
-            (game.global.challengeActive == "Daily" && game.global.world >= getPageSetting('dWindStackingMin'))
-        )
+        (game.global.uberNature == "Wind" && getEmpowerment() == "Wind" && !game.global.mapsActive) && (
+            (
+                (game.global.challengeActive != "Daily" && ratio < getPageSetting('WindStackingMinHD')) ||
+                (game.global.challengeActive == "Daily" && ratio < getPageSetting('dWindStackingMinHD'))
+            ) && (
+                (game.global.challengeActive != "Daily" && game.global.world >= getPageSetting('WindStackingMin')) ||
+                (game.global.challengeActive == "Daily" && game.global.world >= getPageSetting('dWindStackingMin'))
+            )
+        ) ||
+        (checkIfLiquidZone() && getPageSetting('liqstack') == true)
     ) {
         return 15;
     } else {
