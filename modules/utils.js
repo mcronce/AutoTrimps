@@ -103,3 +103,15 @@ function filterMessage2(a){var b=document.getElementById("log");displayed=!ATmes
 function formatMinutesForDescriptions(a){var b,c=Math.floor(60*a%60),d=Math.floor(a%60),e=Math.floor(a/60);if(0==e)b=d+" minutes "+c+" seconds";else if(0<d)10>d&&(d="0"+d),10>c&&(c="0"+c),b=e+":"+d+":"+c;else{var f=1<e?"s":"",g=1<d?"s":"",h=1<c?"s":"";b=e+" hour"+f+" "+d+" minute"+g+" "+c+" second"+h}return b}
 window.onerror=function(b,c,d,e,f){var g=['Message: '+b,'URL: '+c,'Line: '+d,'Column: '+e,'Error object: '+JSON.stringify(f)].join(' - ');0!=d&&console.log('AT logged error: '+g)};
 function throwErrorfromModule(){throw new Error("We have successfully read the thrown error message out of a module")}
+
+function getRemainingBreedTime() {
+    if(game.resources.trimps.owned >= game.resources.trimps.realMax()) {
+        return 0;
+    }
+    var breeding = (game.resources.trimps.owned - game.resources.trimps.employed);
+    var adjustedMax = (game.portal.Coordinated.level) ? game.portal.Coordinated.currentSend : trimps.maxSoldiers;
+    var tps = breeding * getPotencyMod();
+    // TODO:  Make this take the exponential nature of breed timing into account
+    return adjustedMax / tps;
+}
+
