@@ -215,7 +215,7 @@ function shouldBuyNurseries() {
     if(stopped_fighting && fights_since_last_check >= 2) {
         if(game.global.breedTime > 1) {
             // TODO:  Is 50 the right number?
-            return int(getBreedTime(true) * 50);
+            return Math.floor(getBreedTime(true) * 50);
         }
     }
 
