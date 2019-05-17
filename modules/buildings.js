@@ -164,6 +164,8 @@ function buyGemEfficientHousing() {
     }
 }
 
+var fights_since_last_check = 0;
+var was_fighting_last_tick = false;
 function shouldBuyNurseries() {
     if(game.buildings.Nursery.locked) {
         return 0;
@@ -196,7 +198,28 @@ function shouldBuyNurseries() {
         return 0;
     }
 
-    return 1;
+    if(!getPageSetting('DynamicNursery')) {
+        return 1;
+    }
+
+    var stopped_fighting = false;
+    var started_fighting = false;
+    if(was_fighting_last_tick && !game.global.fighting) {
+        stopped_fighting = true;
+    } else if(game.global.fighting && !was_fighting_last_tick) {
+        started_fighting = true;
+        fights_since_last_check++;
+    }
+
+    was_fighting_last_tick = game.global.fighting;
+    if(stopped_fighting && fights_since_last_check >= 2) {
+        if(game.global.breedTime > 1) {
+            // TODO:  Is 50 the right number?
+            return int(getRemainingBreedTime() * 50);
+        }
+    }
+
+    return 0;
 }
 
 function buyBuildings() {
