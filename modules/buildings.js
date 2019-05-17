@@ -167,7 +167,7 @@ function buyGemEfficientHousing() {
     }
 }
 
-var fights_since_last_check = 0;
+var fights_since_nurseries_finished = 0;
 var was_fighting_last_tick = false;
 function shouldBuyNurseries() {
     if(game.buildings.Nursery.locked) {
@@ -186,18 +186,20 @@ function shouldBuyNurseries() {
     if(getBuildingItemPrice(game.buildings.Nursery, 'metal', false, 1) > 0.01 * game.resources.metal.owned) {
         return 0;
     }
+
+    // Skip checks for whether or not we're in a Daily challenge; that's taken care of by isActiveSpireAT() and disActiveSpireAT()
+    if(isActiveSpireAT() && getPageSetting('PreSpireNurseries') > game.buildings.Nursery.owned) {
+        return 1;
+    }
+    if(disActiveSpireAT() && getPageSetting('dPreSpireNurseries') > game.buildings.Nursery.owned) {
+        return 1;
+    }
+
     // No need to check if the setting is >0 because game.global.world can't possibly be <1
     if(game.global.world < getPageSetting('NoNurseriesUntil')) {
         return 0;
     }
     if(getPageSetting('MaxNursery') > -1 && game.buildings.Nursery.owned >= getPageSetting('MaxNursery')) {
-        return 0;
-    }
-    // Skip checks for whether or not we're in a Daily challenge; that's taken care of by isActiveSpireAT() and disActiveSpireAT()
-    if(isActiveSpireAT() && getPageSetting('PreSpireNurseries') <= game.buildings.Nursery.owned) {
-        return 0;
-    }
-    if(disActiveSpireAT() && getPageSetting('dPreSpireNurseries') <= game.buildings.Nursery.owned) {
         return 0;
     }
 
@@ -211,14 +213,28 @@ function shouldBuyNurseries() {
         stopped_fighting = true;
     } else if(game.global.fighting && !was_fighting_last_tick) {
         started_fighting = true;
-        fights_since_last_check++;
+        if(game.buildings.Nursery.owned > 0) {
+            var nursery_in_queue = false;
+            for(var i = 0; i < game.global.buildingsQueue.length; i++) {
+                if(game.global.buildingsQueue[i].startsWith("Nursery")) {
+                    nursery_in_queue = true;
+                    break;
+                }
+            }
+            if(!nursery_in_queue) {
+                fights_since_nurseries_finished++;
+            }
+        }
     }
 
     was_fighting_last_tick = game.global.fighting;
-    if(stopped_fighting && fights_since_last_check >= 2) {
-        if(game.global.breedTime > 1) {
-            // TODO:  Is 50 the right number?
-            return int(getBreedTime(true) * 50);
+    if(stopped_fighting && fights_since_nurseries_finished > 0) {
+        if(getBreedTime(true) > 1) {
+            var buy = Math.floor(getBreedTime(true) * 10);
+            if(buy > 0) {
+                fights_since_nurseries_finished = 0;
+            }
+            return buy;
         }
     }
 
