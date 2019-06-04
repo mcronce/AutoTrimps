@@ -532,7 +532,7 @@ function calcCurrentStance() {
                 (game.global.challengeActive == "Daily" && game.global.world >= getPageSetting('dWindStackingMin'))
             )
         ) ||
-        (checkIfLiquidZone() && getPageSetting('liqstack') == true)
+        (game.global.uberNature == "Wind" && getEmpowerment() == "Wind" && !game.global.mapsActive && checkIfLiquidZone() && getPageSetting('liqstack') == true)
     ) {
         return 15;
     } else {

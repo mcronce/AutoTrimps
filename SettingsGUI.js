@@ -364,6 +364,7 @@ function initializeAllSettings() {
     createSetting('SpireBreedTimer', 'Spire Breed Timer', '<b>ONLY USE IF YOU USE VANILLA GA</b>Set a time for your GA in spire. Recommend not touching GA during this time. ', 'value', -1, null, 'Spire');
     createSetting('PreSpireNurseries', 'Nurseries pre-Spire', 'Set the maximum number of Nurseries to build for Spires. Overrides No Nurseries Until z and Max Nurseries so you can keep them seperate! Will build nurseries before z200 for Spire 1, but only on the zone of Spires 2+ to avoid unnecessary burning. Disable with -1.', 'value', -1, null, 'Spire');
     createSetting('spireshitbuy', 'Buy Gear in Spire', 'Will buy Weapons and Armor in Spire regardless of your H:D ratio. Respects your max gear level and ignore spires setting. ', 'boolean', false, null, 'Spire');
+    createSetting('SkipSpires', 'Skip Spires', 'Will disregard your H:D ratio after Farm Before Spire is done (if set). Useful to die in spires if farming takes too long', 'boolean', false, null, 'Spire');
 
 
 
@@ -506,7 +507,7 @@ function initializeAllSettings() {
 
     //Nu Line
     document.getElementById('lowdmg').parentNode.insertAdjacentHTML('afterend', '<br>');
-    createSetting('autonu', 'Auto Nu', 'Autospend Nu on an Heirloom you select. Works on Portal. You can either use an Automated Ratio (Not mathmatically tested currently) or a Manual Ratio (Recommended, plenty of tools to help with this). ', 'boolean', false, null, 'Heirlooms');
+    createSetting('autonu', 'Auto Nu', '<b>ONLY WORKS ON 5 SLOT HEIRLOOMS</b><br>Autospend Nu on an Heirloom you select. Works on Portal. You can either use an Automated Ratio (Not mathmatically tested currently) or a Manual Ratio (Recommended, plenty of tools to help with this). ', 'boolean', false, null, 'Heirlooms');
     createSetting('heirloomnu', 'Auto Nu Heirloom', 'The name of the Heirloom you want to spend Nu On. ', 'textValue', 'undefined', null, 'Heirlooms');
     createSetting('rationu', ['Manual Ratio Nu', 'Auto Ratio Nu'], '<b>Manual: </b>Select your own Ratio for Nu Spending. Use 0 to spend no Nu on that slot. <br><b>Auto: </b>Spends Nu according to some kind of funky math. ', 'multitoggle', 0, null, 'Heirlooms');
     createSetting('slot1nu', 'Slot 1', 'Slot 1 of your Heirloom', 'value', '-1', null, 'Heirlooms');
