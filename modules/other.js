@@ -563,11 +563,11 @@ if (game.portal.Anticipation.level > 0) {
 
 function avoidempower() {
 	if(armydeath()) {
-            if (typeof game.global.dailyChallenge.bogged === 'undefined' && typeof game.global.dailyChallenge.plague === 'undefined'){
-                mapsClicked(true);
-                return;
-            }
-        }
+		if (typeof game.global.dailyChallenge.bogged === 'undefined' && typeof game.global.dailyChallenge.plague === 'undefined'){
+			mapsClicked(true);
+			return;
+		}
+	}
 }
 
 var spirebreeding = false;
