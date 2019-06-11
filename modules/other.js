@@ -565,6 +565,9 @@ function avoidempower() {
 	if(armydeath()) {
 		if (typeof game.global.dailyChallenge.bogged === 'undefined' && typeof game.global.dailyChallenge.plague === 'undefined'){
 			mapsClicked(true);
+			if(getPageSetting('AutoMaps') != '1') {
+				mapsClicked(true);
+			}
 			return;
 		}
 	}
