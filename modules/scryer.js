@@ -1,13 +1,16 @@
 var wantToScry = false;
 function useScryerStance() {
     var scry = 4;
-    if (game.global.uberNature == "Wind" && getEmpowerment() != "Wind") {
+    var curEnemy = getCurrentEnemy(1);
+
+    if(should_windstack(curEnemy) || game.global.uberNature == "Wind" && getEmpowerment() != "Wind") {
         scry = 5;
     }
 
+
     var AutoStance = getPageSetting('AutoStance');
     function autostancefunction() {
-        if ((getPageSetting('AutoStance') == 3) || (getPageSetting('use3daily') == true && game.global.challengeActive == "Daily")) {
+        if(getPageSetting('AutoStance') == 3 || (getPageSetting('use3daily') == true && game.global.challengeActive == "Daily")) {
             windStance();
         } else if (AutoStance == 1) {
             autoStance();
@@ -29,7 +32,6 @@ function useScryerStance() {
     never_scry = never_scry || (getPageSetting('UseScryerStance') == true && !game.global.mapsActive && getPageSetting('screwessence') == true && countRemainingEssenceDrops() < 1);
 
     //check Corrupted Never
-    var curEnemy = getCurrentEnemy(1);
     var iscorrupt = curEnemy && curEnemy.mutation == "Corruption";
     if (((never_scry) || getPageSetting('UseScryerStance') == true && !game.global.mapsActive && (iscorrupt && getPageSetting('ScryerSkipCorrupteds2') == 0))) {
         autostancefunction();
@@ -37,8 +39,7 @@ function useScryerStance() {
         return;
     }
     //check Healthy never
-    var curEnemyhealth = getCurrentEnemy(1);
-    var ishealthy = curEnemyhealth && curEnemyhealth.mutation == "Healthy";
+    var ishealthy = curEnemy && curEnemy.mutation == "Healthy";
     if (((never_scry) || getPageSetting('UseScryerStance') == true && !game.global.mapsActive && (ishealthy && getPageSetting('ScryerSkipHealthy') == 0))) {
         autostancefunction();
         wantToScry = false;
