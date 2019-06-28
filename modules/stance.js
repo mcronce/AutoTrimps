@@ -5,7 +5,7 @@ function autoStanceNew() {
     if (game.global.gridArray.length === 0) return;
     if (game.global.soldierHealth <= 0) return;
     if (!game.upgrades.Formations.done) return;
-	
+
     if(game.global.formation == 2 && game.global.soldierHealth <= game.global.soldierHealthMax * 0.25) {
         setFormation('0');
     }
@@ -56,7 +56,7 @@ function autoStance() {
         enemyHealth *= 5;
     if (enemy.corrupted == 'healthyStrong')
         enemyDamage *= 2.5;
-		if (enemy.corrupted == 'healthyTough')
+    if (enemy.corrupted == 'healthyTough')
         enemyHealth *= 7.5;
 
     var xDamage = (enemyDamage - baseBlock);
@@ -222,7 +222,7 @@ function autoStanceCheck(enemyCrit) {
         enemyHealth *= 5;
     if (enemy.corrupted == 'healthyStrong')
         enemyDamage *= 2.5;
-		if (enemy.corrupted == 'healthyTough')
+    if (enemy.corrupted == 'healthyTough')
         enemyHealth *= 7.5;
     enemyDamage -= ourBlock;
     var pierce = 0;
@@ -295,69 +295,54 @@ function windStance() {
     if (game.global.world <= 70) return;
     var stancey = 2;
     if (game.global.challengeActive != "Daily") {
-	if (calcCurrentStance() == 5) {
+        if (calcCurrentStance() == 5) {
             stancey = 5;
             lowHeirloom();
-        }
-        if (calcCurrentStance() == 2) {
+        } else if (calcCurrentStance() == 2) {
             stancey = 2;
             lowHeirloom();
-        }
-        if (calcCurrentStance() == 0) {
+        } else if (calcCurrentStance() == 0) {
             stancey = 0;
             lowHeirloom();
-        }
-        if (calcCurrentStance() == 1) {
+        } else if (calcCurrentStance() == 1) {
             stancey = 1;
             lowHeirloom();
-        }
-        if (calcCurrentStance() == 15) {
+        } else if (calcCurrentStance() == 15) {
             stancey = 5;
             highHeirloom();
-        }
-        if (calcCurrentStance() == 12) {
+        } else if (calcCurrentStance() == 12) {
             stancey = 2;
             highHeirloom();
-        }
-        if (calcCurrentStance() == 10) {
+        } else if (calcCurrentStance() == 10) {
             stancey = 0;
             highHeirloom();
-        }
-        if (calcCurrentStance() == 11) {
+        } else if (calcCurrentStance() == 11) {
             stancey = 1;
             highHeirloom();
         }
-    }
-    if (game.global.challengeActive == "Daily") {
-	if (calcCurrentStance() == 5) {
+    } else {
+        if (calcCurrentStance() == 5) {
             stancey = 5;
             dlowHeirloom();
-        }
-        if (calcCurrentStance() == 2) {
+        } else if (calcCurrentStance() == 2) {
             stancey = 2;
             dlowHeirloom();
-        }
-        if (calcCurrentStance() == 0) {
+        } else if (calcCurrentStance() == 0) {
             stancey = 0;
             dlowHeirloom();
-        }
-        if (calcCurrentStance() == 1) {
+        } else if (calcCurrentStance() == 1) {
             stancey = 1;
             dlowHeirloom();
-        }
-        if (calcCurrentStance() == 15) {
+        } else if (calcCurrentStance() == 15) {
             stancey = 5;
             dhighHeirloom();
-        }
-        if (calcCurrentStance() == 12) {
+        } else if (calcCurrentStance() == 12) {
             stancey = 2;
             dhighHeirloom();
-        }
-        if (calcCurrentStance() == 10) {
+        } else if (calcCurrentStance() == 10) {
             stancey = 0;
             dhighHeirloom();
-        }
-        if (calcCurrentStance() == 11) {
+        } else if (calcCurrentStance() == 11) {
             stancey = 1;
             dhighHeirloom();
         }
