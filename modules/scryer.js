@@ -10,7 +10,7 @@ function useScryerStance() {
 
     var AutoStance = getPageSetting('AutoStance');
     function autostancefunction() {
-        if(getPageSetting('AutoStance') == 3 || (getPageSetting('use3daily') == true && game.global.challengeActive == "Daily")) {
+        if(should_windstack(curEnemy)) {
             windStance();
         } else if (AutoStance == 1) {
             autoStance();
