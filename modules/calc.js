@@ -523,9 +523,9 @@ function calcHDratio() {
 function should_windstack(enemy) {
     if(game.global.uberNature == 'Wind' && getEmpowerment() == 'Wind' && !game.global.mapsActive) {
         if(game.global.lastClearedCell == 98 || enemy.mutation == 'Corruption' || enemy.mutation == 'Healthy') {
-            if(game.global.challengeActive == 'Daily' && ratio < getPageSetting('dWindStackingMinHD') && game.global.world >= getPageSetting('dWindStackingMin')) {
+            if(getPageSetting('use3daily') && game.global.challengeActive == 'Daily' && ratio < getPageSetting('dWindStackingMinHD') && game.global.world >= getPageSetting('dWindStackingMin')) {
                 return true;
-            } else if(game.global.challengeActive != 'Daily' && ratio < getPageSetting('WindStackingMinHD') && game.global.world >= getPageSetting('WindStackingMin')) {
+            } else if(getPageSetting('AutoStance') == 3 && game.global.challengeActive != 'Daily' && ratio < getPageSetting('WindStackingMinHD') && game.global.world >= getPageSetting('WindStackingMin')) {
                 return true;
             } else if(checkIfLiquidZone() && getPageSetting('liqstack')) {
                 return true;
