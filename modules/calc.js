@@ -520,26 +520,31 @@ function calcHDratio() {
     return ratio;
 }
 
+function should_windstack(enemy) {
+    if(game.global.uberNature == 'Wind' && getEmpowerment() == 'Wind' && !game.global.mapsActive) {
+        if(game.global.lastClearedCell == 98 || enemy.mutation == 'Corruption' || enemy.mutation == 'Healthy') {
+            if(getPageSetting('use3daily') && game.global.challengeActive == 'Daily' && ratio < getPageSetting('dWindStackingMinHD') && game.global.world >= getPageSetting('dWindStackingMin')) {
+                return true;
+            } else if(getPageSetting('AutoStance') == 3 && game.global.challengeActive != 'Daily' && ratio < getPageSetting('WindStackingMinHD') && game.global.world >= getPageSetting('WindStackingMin')) {
+                return true;
+            } else if(checkIfLiquidZone() && getPageSetting('liqstack')) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 function calcCurrentStance() {
     var ratio = calcHDratio()
-    if (
-        (game.global.uberNature == "Wind" && getEmpowerment() == "Wind" && !game.global.mapsActive) && (
-            (
-                (game.global.challengeActive != "Daily" && ratio < getPageSetting('WindStackingMinHD')) ||
-                (game.global.challengeActive == "Daily" && ratio < getPageSetting('dWindStackingMinHD'))
-            ) && (
-                (game.global.challengeActive != "Daily" && game.global.world >= getPageSetting('WindStackingMin')) ||
-                (game.global.challengeActive == "Daily" && game.global.world >= getPageSetting('dWindStackingMin'))
-            )
-        ) ||
-        (game.global.uberNature == "Wind" && getEmpowerment() == "Wind" && !game.global.mapsActive && checkIfLiquidZone() && getPageSetting('liqstack') == true)
-    ) {
+    var curEnemy = getCurrentEnemy(1);
+    if(should_windstack(curEnemy)) {
         return 15;
     } else {
         //Base Calc
         var ehealth = 1;
         if (game.global.fighting) {
-            ehealth = (getCurrentEnemy().maxHealth - getCurrentEnemy().health);
+            ehealth = (curEnemy.maxHealth - curEnemy.health);
         }
         var attacklow = calcOurDmg("max", false, true);
         var attackhigh = calcOurDmg("max", false, true);
