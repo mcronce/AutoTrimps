@@ -3,10 +3,9 @@ function useScryerStance() {
     var scry = 4;
     var curEnemy = getCurrentEnemy(1);
 
-    if(should_windstack(curEnemy) || game.global.uberNature == "Wind" && getEmpowerment() != "Wind") {
+    if(should_windstack(curEnemy) || (game.global.uberNature == "Wind" && getEmpowerment() != "Wind")) {
         scry = 5;
     }
-
 
     var AutoStance = getPageSetting('AutoStance');
     function autostancefunction() {
