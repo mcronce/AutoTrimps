@@ -521,6 +521,7 @@ function calcHDratio() {
 }
 
 function should_windstack(enemy) {
+    var ratio = calcHDratio();
     if(game.global.uberNature == 'Wind' && getEmpowerment() == 'Wind' && !game.global.mapsActive) {
         if(game.global.lastClearedCell == 98 || enemy.mutation == 'Corruption' || enemy.mutation == 'Healthy') {
             if(getPageSetting('use3daily') && game.global.challengeActive == 'Daily' && ratio < getPageSetting('dWindStackingMinHD') && game.global.world >= getPageSetting('dWindStackingMin')) {
@@ -536,7 +537,7 @@ function should_windstack(enemy) {
 }
 
 function calcCurrentStance() {
-    var ratio = calcHDratio()
+    var ratio = calcHDratio();
     var curEnemy = getCurrentEnemy(1);
     if(should_windstack(curEnemy)) {
         return 15;
