@@ -3,10 +3,9 @@ function useScryerStance() {
     var scry = 4;
     var curEnemy = getCurrentEnemy(1);
 
-    if(should_windstack(curEnemy) || game.global.uberNature == "Wind" && getEmpowerment() != "Wind") {
+    if(should_windstack(curEnemy) || (game.global.uberNature == "Wind" && getEmpowerment() != "Wind")) {
         scry = 5;
     }
-
 
     var AutoStance = getPageSetting('AutoStance');
     function autostancefunction() {
@@ -102,11 +101,14 @@ function useScryerStance() {
     if (useoverkill && game.portal.Overkill.level > 0 && getPageSetting('UseScryerStance') == true) {
         var minDamage = calcOurDmg("min",false,true);
         var Sstance = 0.5;
+        if(scry == 5) {
+            Sstance = 1;
+        }
         var ovkldmg = minDamage * Sstance * (game.portal.Overkill.level*0.005);
         var ovklHDratio = getCurrentEnemy(1).maxHealth / ovkldmg;
         if (ovklHDratio < 2) {
             if (oktoswitch) {
-                setFormation(4);
+                setFormation(scry);
             }
             return;
         }
