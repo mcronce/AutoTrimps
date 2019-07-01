@@ -539,12 +539,18 @@ function should_windstack(enemy) {
 function windstack_count_check() {
     var stacks = 190;
 
-    if(game.global.challengeActive != "Daily" && getPageSetting('WindStackingMax') > 0) {
-        stacks = getPageSetting('WindStackingMax');
+    if(game.global.challengeActive == 'Daily') {
+        var setting = getPageSetting('dWindStackingMax');
+        if(setting > 0) {
+            stacks = setting;
+        }
+    } else {
+        var setting = getPageSetting('WindStackingMax');
+        if(setting > 0) {
+            stacks = setting;
+        }
     }
-    if(game.global.challengeActive == "Daily" && getPageSetting('dWindStackingMax') > 0) {
-        stacks = getPageSetting('dWindStackingMax');
-    }
+
     if(game.global.uberNature == "Wind") {
         stacks += 100;
     }
