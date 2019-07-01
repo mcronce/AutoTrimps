@@ -101,11 +101,14 @@ function useScryerStance() {
     if (useoverkill && game.portal.Overkill.level > 0 && getPageSetting('UseScryerStance') == true) {
         var minDamage = calcOurDmg("min",false,true);
         var Sstance = 0.5;
+        if(scry == 5) {
+            Sstance = 1;
+        }
         var ovkldmg = minDamage * Sstance * (game.portal.Overkill.level*0.005);
         var ovklHDratio = getCurrentEnemy(1).maxHealth / ovkldmg;
         if (ovklHDratio < 2) {
             if (oktoswitch) {
-                setFormation(4);
+                setFormation(scry);
             }
             return;
         }
