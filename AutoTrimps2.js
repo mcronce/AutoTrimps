@@ -3,6 +3,9 @@ function ATscriptLoad(a,b){null==b&&debug('Wrong Syntax. Script could not be loa
 function ATscriptUnload(a){var b=document.getElementById(a+"_MODULE");b&&(document.head.removeChild(b),debug("Removing "+a+"_MODULE","other"))}
 ATscriptLoad(modulepath, 'utils');
 
+document.getElementById('critSpan').style.fontSize = '0.6em';
+document.getElementById('badCrit').style.fontSize = '0.6em';
+
 function initializeAutoTrimps() {
     loadPageVariables();
     ATscriptLoad('','SettingsGUI');
