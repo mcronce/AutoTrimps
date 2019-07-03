@@ -142,7 +142,7 @@ initializeAllTabs();
 
 function initializeAllSettings() {
 
-    //CORE:
+    //Core
 
     //Line 1:
     createSetting('ManualGather2', ['Manual Gather/Build', 'Auto Gather/Build', 'Mining/Building Only', 'Science Research OFF'], 'Controls what you gather/build do. Manual does nothing<br>Auto Gathering of Food,Wood,Metal(w/turkimp) & Science. Auto speed-Builds your build queue. <br>Mining/Building only does exactly what it says. Only use if you are passed the early stages of the game and have the mastery foremany unlocked (No longer need to trap, food and wood are useless). <br>You can disable science researching for the achievement: Reach Z120 without using manual research.', 'multitoggle', 1, null, "Core");
@@ -172,7 +172,12 @@ function initializeAllSettings() {
     $pauseScript.parentNode.style.setProperty('float', 'right');
     $pauseScript.parentNode.style.setProperty('margin-right', '1vw');
     $pauseScript.parentNode.style.setProperty('margin-left', '0');
-
+    createSetting('radonsettings', ['Helium', 'Radon'], 'Switch between Heilum (U1) and Radon (U2) settings. ', 'multitoggle', 0, null, 'Core');
+    var $radonsettings = document.getElementById('radonsettings');
+    $radonsettings.parentNode.style.setProperty('float', 'right');
+    $radonsettings.parentNode.style.setProperty('margin-right', '1vw');
+    $radonsettings.parentNode.style.setProperty('margin-left', '0');
+    
 
 
     //Daily
@@ -330,7 +335,8 @@ function initializeAllSettings() {
     //Line 1
     createSetting('AutoMaps', ["Auto Maps Off", "Auto Maps On", "Auto Maps No Unique"], 'Automaps. The no unique setting will not run unique maps such as dimensions of anger. Recommended ON. ', 'multitoggle', 1, null, "Maps");
     createSetting('DynamicSiphonology', 'Dynamic Siphonology', 'Recommended Always ON. Use the right level of siphonology based on your damage output. IE: Only uses  siphonology if you are weak. With this OFF it means it ALWAYS uses the lowest siphonology map you can create. Siphonology is a perk you get at level 115-125ish, and means you receive map bonus stacks for running maps below your current zone - Up to 3 zones below (1 per perk level).', 'boolean', true, null, 'Maps');
-    createSetting('PreferMetal', 'Prefer Metal Maps', 'Always prefer metal maps, intended for manual use, such as pre-spire farming. Remember to turn it back off after you\'re done farming!', 'boolean', false, null, 'Maps'); //rarely better tbh
+    createSetting('PreferMetal', 'Prefer Metal Maps', 'Always prefer metal maps, intended for manual use, such as pre-spire farming. Remember to turn it back off after you\'re done farming!', 'boolean', false, null, 'Maps');
+    createSetting('mapselection', 'Map Selection', 'Select which you prefer to use. Recommend Gardens if you have unlocked it. ', 'dropdown', 'Mountain', ["Random", "Mountain", "Forest", "Sea", "Depths", "Gardens"], 'Maps');
     createSetting('MaxMapBonusAfterZone', 'Max MapBonus After', 'Always gets Max Map Bonus from this zone on. (inclusive and after).<br><b>NOTE:</b> Set -1 to disable entirely (default). Set 0 to use it always.<br><b>Advanced:</b>User can set a lower number than the default 10 maps with the AT hidden console command: MODULES[\\"maps\\"].maxMapBonusAfterZ = 9;', 'value', '-1', null, 'Maps');
     createSetting('MaxMapBonuslimit', 'Max MapBonus Limit', 'Limit the amount of Map Bonuses you get. Default is 10. ', 'value', '10', null, 'Maps');
     createSetting('MaxMapBonushealth', 'Max MapBonus Health', 'Limit the amount of map bonuses you get when AutoMaps requires more health. Default is 10. ', 'value', '10', null, 'Maps');
@@ -1016,137 +1022,299 @@ function updateCustomButtons() {
 
     //Hide settings
 
+    //Radon
+    var radonon = getPageSetting('radonsettings') == 1;
+
+
+    //Helium    
+
+    //Core
+    (getPageSetting('ManualGather2')==2 && game.talents.foreman.purchased) ? turnOn("gathermetal"): turnOff("gathermetal");
+    !radonon ? turnOn("amalcoord"): turnOff("amalcoord");
+    !radonon && getPageSetting('amalcoord')==true ? turnOn("amalcoordt"): turnOff("amalcoordt");
+    !radonon && getPageSetting('amalcoord')==true ? turnOn("amalcoordhd"): turnOff("amalcoordhd");
+    !radonon && getPageSetting('amalcoord')==true ? turnOn("amalcoordz"): turnOff("amalcoordz");
+    !radonon ? turnOn("AutoAllocatePerks"): turnOff("AutoAllocatePerks");
+    !radonon && getPageSetting('AutoAllocatePerks')==1 ? turnOn("fastallocate"): turnOff("fastallocate");
+
     //Portal
     document.getElementById("autoMapBtn").setAttribute("class", "noselect settingsBtn settingBtn" + autoTrimpSettings.AutoMaps.value);
-    (game.challenges.Balance.filter()) ? turnOn("AutoPortal") : turnOff("AutoPortal");
-    (autoTrimpSettings.AutoPortal.selected == "Custom") ? turnOn("CustomAutoPortal") : turnOff("CustomAutoPortal");
+    !radonon ? turnOn("AutoPortal"): turnOff("AutoPortal");
+    (!radonon && autoTrimpSettings.AutoPortal.selected == "Custom") ? turnOn("CustomAutoPortal") : turnOff("CustomAutoPortal");
     var heHr = (autoTrimpSettings.AutoPortal.selected == "Helium Per Hour");
-    (heHr || autoTrimpSettings.AutoPortal.selected == "Custom") ? turnOn("HeliumHourChallenge") : turnOff("HeliumHourChallenge");
-    (heHr) ? turnOn("HeHrDontPortalBefore") : turnOff("HeHrDontPortalBefore");
-    (heHr) ? turnOn("HeliumHrBuffer") : turnOff("HeliumHrBuffer");
-    getPageSetting('AutoPortalDaily')==2 ? turnOn("dCustomAutoPortal") : turnOff("dCustomAutoPortal");
-    getPageSetting('AutoPortalDaily')==1 ? turnOn("dHeHrDontPortalBefore") : turnOff("dHeHrDontPortalBefore");
-    getPageSetting('AutoPortalDaily')==1 ? turnOn("dHeliumHrBuffer") : turnOff("dHeliumHrBuffer");
-    getPageSetting('AutoPortalDaily')>0 ? turnOn("dHeliumHourChallenge") : turnOff("dHeliumHourChallenge");
+    !radonon && (heHr || autoTrimpSettings.AutoPortal.selected == "Custom") ? turnOn("HeliumHourChallenge") : turnOff("HeliumHourChallenge");
+    !radonon && (heHr) ? turnOn("HeHrDontPortalBefore") : turnOff("HeHrDontPortalBefore");
+    !radonon && (heHr) ? turnOn("HeliumHrBuffer") : turnOff("HeliumHrBuffer");
+
+
+    //Daily
+    !radonon ? turnOn("buyheliumy"): turnOff("buyheliumy");
+    !radonon ? turnOn("dscryvoidmaps"): turnOff("dscryvoidmaps");
+    !radonon ? turnOn("dIgnoreSpiresUntil"): turnOff("dIgnoreSpiresUntil");
+    !radonon ? turnOn("dExitSpireCell"): turnOff("dExitSpireCell");
+    !radonon ? turnOn("dPreSpireNurseries"): turnOff("dPreSpireNurseries");
+    !radonon ? turnOn("DailyVoidMod"): turnOff("DailyVoidMod");
+    !radonon ? turnOn("dRunNewVoidsUntilNew"): turnOff("dRunNewVoidsUntilNew");
+
+    //DRaid
+    !radonon ? turnOn("dPraidingzone"): turnOff("dPraidingzone");
+    !radonon && getPageSetting('dPraidingzone') != -1 ? turnOn('dPraidHarder') : turnOff('dPraidHarder');
+    !radonon && getPageSetting('dPraidHarder') ? turnOn('dPraidFarmFragsZ') : turnOff('dPraidFarmFragsZ');
+    !radonon && getPageSetting('dPraidHarder') ? turnOn('dPraidBeforeFarmZ') : turnOff('dPraidBeforeFarmZ');
+    !radonon && getPageSetting('dPraidHarder') ? turnOn('dMaxPraidZone') : turnOff('dMaxPraidZone');
+    !radonon ? turnOn("Dailybwraid"): turnOff("Dailybwraid");
+    !radonon && getPageSetting('Dailybwraid')==true ? turnOn("dBWraidingz"): turnOff("dBWraidingz");
+    !radonon && getPageSetting('Dailybwraid')==true ? turnOn("dBWraidingmax"): turnOff("dBWraidingmax");
+
+    //DWind
+    !radonon ? turnOn("use3daily"): turnOff("use3daily");
+    !radonon ? turnOn("liqstack"): turnOff("liqstack");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dwindhealthy"): turnOff("dwindhealthy");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dusebstance"): turnOff("dusebstance");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dWindStackingMin"): turnOff("dWindStackingMin");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dWindStackingMinHD"): turnOff("dWindStackingMinHD");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dWindStackingMax"): turnOff("dWindStackingMax");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dwindcutoff"): turnOff("dwindcutoff");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dwindcutoffmap"): turnOff("dwindcutoffmap");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dwsmax"): turnOff("dwsmax");
+    !radonon && getPageSetting('use3daily')==true ? turnOn("dwsmaxhd"): turnOff("dwsmaxhd");
+
+    //DLoom
+    !radonon && getPageSetting('dloomswap') > 0 ? turnOn('dloomswaphd') : turnOff('dloomswaphd');
+
+    //DPortal
+    !radonon ? turnOn("AutoStartDaily"): turnOff("AutoStartDaily");
+    !radonon ? turnOn("AutoPortalDaily"): turnOff("AutoPortalDaily");
+    !radonon && getPageSetting('AutoPortalDaily')==2 ? turnOn("dCustomAutoPortal") : turnOff("dCustomAutoPortal");
+    !radonon && getPageSetting('AutoPortalDaily')==1 ? turnOn("dHeHrDontPortalBefore") : turnOff("dHeHrDontPortalBefore");
+    !radonon && getPageSetting('AutoPortalDaily')==1 ? turnOn("dHeliumHrBuffer") : turnOff("dHeliumHrBuffer");
+    !radonon && getPageSetting('AutoPortalDaily')>0 ? turnOn("dHeliumHourChallenge") : turnOff("dHeliumHourChallenge");
+    
+
+    //C2
+    !radonon ? turnOn("FinishC2"): turnOff("FinishC2");
+    !radonon ? turnOn("buynojobsc"): turnOff("buynojobsc");
+    !radonon ? turnOn("cfightforever"): turnOff("cfightforever");
+    !radonon ? turnOn("mapc2hd"): turnOff("mapc2hd");
+    !radonon ? turnOn("novmsc2"): turnOff("novmsc2");
+    !radonon ? turnOn("c2runnerstart"): turnOff("c2runnerstart");
+    !radonon && getPageSetting('c2runnerstart') == true ? turnOn("c2runnerportal"): turnOff("c2runnerportal");
+    !radonon && getPageSetting('c2runnerstart') == true ? turnOn("c2runnerpercent"): turnOff("c2runnerpercent");
+    !radonon ? turnOn("c2table"): turnOff("c2table");
+
+
+    //Buildings
+    !radonon ? turnOn("BuyBuildingsNew"): turnOff("BuyBuildingsNew");
+    !radonon ? turnOn("MaxGym"): turnOff("MaxGym");
+    !radonon ? turnOn("GymWall"): turnOff("GymWall");
+    var fuckbuilding = (game.talents.autoStructure.purchased && game.talents.deciBuild.purchased && getPageSetting('hidebuildings')==true && getPageSetting('BuyBuildingsNew')==0);
+    (!radonon && game.talents.autoStructure.purchased && game.talents.deciBuild.purchased) ? turnOn("hidebuildings") : turnOff("hidebuildings");
+    (!radonon && !fuckbuilding) ? turnOn("MaxHut") : turnOff("MaxHut");
+    (!radonon && !fuckbuilding) ? turnOn("MaxHouse") : turnOff("MaxHouse");
+    (!radonon && !fuckbuilding) ? turnOn("MaxMansion") : turnOff("MaxMansion");
+    (!radonon && !fuckbuilding) ? turnOn("MaxHotel") : turnOff("MaxHotel");
+    (!radonon && !fuckbuilding) ? turnOn("MaxResort") : turnOff("MaxResort");
+    (!radonon && !fuckbuilding) ? turnOn("MaxGateway") : turnOff("MaxGateway");
+    (!radonon && !fuckbuilding) ? turnOn("MaxWormhole") : turnOff("MaxWormhole");
+    (!radonon && !fuckbuilding) ? turnOn("MaxCollector") : turnOff("MaxCollector");
+    (!radonon && !fuckbuilding) ? turnOn("MaxTribute") : turnOff("MaxTribute");
+    (!radonon && !fuckbuilding) ? turnOn("MaxNursery") : turnOff("MaxNursery");
+    (!radonon && !fuckbuilding) ? turnOn("NoNurseriesUntil") : turnOff("NoNurseriesUntil");
+    (!radonon && !fuckbuilding) ? turnOn("WarpstationCap") : turnOff("WarpstationCap");
+    (!radonon && !fuckbuilding) ? turnOn("WarpstationCoordBuy") : turnOff("WarpstationCoordBuy");
+    (!radonon && !fuckbuilding) ? turnOn("FirstGigastation") : turnOff("FirstGigastation");
+    (!radonon && !fuckbuilding) ? turnOn("DeltaGigastation") : turnOff("DeltaGigastation");
+    (!radonon && !fuckbuilding) ? turnOn("WarpstationWall3") : turnOff("WarpstationWall3");
+
+
+    //Jobs
+    !radonon ? turnOn("BuyJobsNew"): turnOff("BuyJobsNew");
+    !radonon ? turnOn("AutoMagmamancers"): turnOff("AutoMagmamancers");
+    var fuckjobbies = (game.talents.autoJobs.purchased && getPageSetting('fuckjobs')==true && getPageSetting('BuyJobsNew')==0);
+    (!radonon && game.talents.autoJobs.purchased) ? turnOn("fuckjobs") : turnOff("fuckjobs");
+    (!radonon && !fuckjobbies) ? turnOn("FarmerRatio") : turnOff("FarmerRatio");
+    (!radonon && !fuckjobbies) ? turnOn("LumberjackRatio") : turnOff("LumberjackRatio");
+    (!radonon && !fuckjobbies) ? turnOn("MinerRatio") : turnOff("MinerRatio");
+    (!radonon && !fuckjobbies) ? turnOn("MaxScientists") : turnOff("MaxScientists");
+    (!radonon && !fuckjobbies) ? turnOn("MaxExplorers") : turnOff("MaxExplorers");
+    (!radonon && !fuckjobbies) ? turnOn("MaxTrainers") : turnOff("MaxTrainers");
+
+
+    //Gear
+    !radonon ? turnOn("BuyArmorNew"): turnOff("BuyArmorNew");
+    !radonon ? turnOn("BuyWeaponsNew"): turnOff("BuyWeaponsNew");
+    !radonon ? turnOn("CapEquip2"): turnOff("CapEquip2");
+    !radonon ? turnOn("CapEquiparm"): turnOff("CapEquiparm");
+    !radonon ? turnOn("dmgcuntoff"): turnOff("dmgcuntoff");
+    !radonon ? turnOn("DynamicPrestige2"): turnOff("DynamicPrestige2");
+    !radonon ? turnOn("Prestige"): turnOff("Prestige");
+    !radonon ? turnOn("ForcePresZ"): turnOff("ForcePresZ");
+    !radonon ? turnOn("PrestigeSkip1_2"): turnOff("PrestigeSkip1_2");
+    !radonon ? turnOn("DelayArmorWhenNeeded"): turnOff("DelayArmorWhenNeeded");
+    !radonon ? turnOn("BuyShieldblock"): turnOff("BuyShieldblock");
+    !radonon ? turnOn("trimpsnotdie"): turnOff("trimpsnotdie");
+    !radonon ? turnOn("gearamounttobuy"): turnOff("gearamounttobuy");
+    !radonon ? turnOn("always2"): turnOff("always2");
+
+
+    //Maps
+    !radonon ? turnOn("DynamicSiphonology"): turnOff("DynamicSiphonology");
+    !radonon ? turnOn("PreferMetal"): turnOff("PreferMetal");
+    !radonon ? turnOn("MaxMapBonusAfterZone"): turnOff("MaxMapBonusAfterZone");
+    !radonon ? turnOn("MaxMapBonuslimit"): turnOff("MaxMapBonuslimit");
+    !radonon ? turnOn("MaxMapBonushealth"): turnOff("MaxMapBonushealth");
+    !radonon ? turnOn("mapcuntoff"): turnOff("mapcuntoff");
+    !radonon ? turnOn("DisableFarm"): turnOff("DisableFarm");
+    !radonon ? turnOn("LowerFarmingZone"): turnOff("LowerFarmingZone");
+    !radonon ? turnOn("FarmWhenNomStacks7"): turnOff("FarmWhenNomStacks7");
+    !radonon ? turnOn("VoidMaps"): turnOff("VoidMaps");
+    !radonon ? turnOn("RunNewVoidsUntilNew"): turnOff("RunNewVoidsUntilNew");
+    !radonon ? turnOn("onlystackedvoids"): turnOff("onlystackedvoids");
+    !radonon ? turnOn("TrimpleZ"): turnOff("TrimpleZ");
+    !radonon ? turnOn("AdvMapSpecialModifier"): turnOff("AdvMapSpecialModifier");
+    !radonon ? turnOn("scryvoidmaps"): turnOff("scryvoidmaps");
+    !radonon ? turnOn("buywepsvoid"): turnOff("buywepsvoid");
+
+
+    //Spire
+    !radonon ? turnOn("MaxStacksForSpire"): turnOff("MaxStacksForSpire");
+    !radonon ? turnOn("MinutestoFarmBeforeSpire"): turnOff("MinutestoFarmBeforeSpire");
+    !radonon ? turnOn("IgnoreSpiresUntil"): turnOff("IgnoreSpiresUntil");
+    !radonon ? turnOn("ExitSpireCell"): turnOff("ExitSpireCell");
+    !radonon ? turnOn("SpireBreedTimer"): turnOff("SpireBreedTimer");
+    !radonon ? turnOn("PreSpireNurseries"): turnOff("PreSpireNurseries");
+    !radonon ? turnOn("spireshitbuy"): turnOff("spireshitbuy");
+    !radonon ? turnOn("SkipSpires"): turnOff("SkipSpires");
+
+
+    //Raiding
+    !radonon ? turnOn("Praidingzone"): turnOff("Praidingzone");
+    !radonon && getPageSetting('Praidingzone') != -1 ? turnOn('PraidHarder') : turnOff('PraidHarder');
+    !radonon && getPageSetting('PraidHarder') ? turnOn('PraidFarmFragsZ') : turnOff('PraidFarmFragsZ');
+    !radonon && getPageSetting('PraidHarder') ? turnOn('PraidBeforeFarmZ') : turnOff('PraidBeforeFarmZ');
+    !radonon && getPageSetting('PraidHarder') ? turnOn('MaxPraidZone') : turnOff('MaxPraidZone');
+    !radonon ? turnOn("BWraid"): turnOff("BWraid");
+    !radonon && getPageSetting('BWraid')==true ? turnOn("BWraidingz"): turnOff("BWraidingz");
+    !radonon && getPageSetting('BWraid')==true ? turnOn("BWraidingmax"): turnOff("BWraidingmax");
+
+
+    //Windstacking
+    var wson = (getPageSetting('AutoStance')==3);
+    (!radonon && !wson) ? turnOn("turnwson"): turnOff("turnwson");
+    (!radonon && wson) ? turnOn("windhealthy"): turnOff("windhealthy");
+    (!radonon && wson) ? turnOn("usebstance"): turnOff("usebstance");
+    (!radonon && wson) ? turnOn("WindStackingMin"): turnOff("WindStackingMin");
+    (!radonon && wson) ? turnOn("WindStackingMinHD"): turnOff("WindStackingMinHD");
+    (!radonon && wson) ? turnOn("WindStackingMax"): turnOff("WindStackingMax");
+    (!radonon && wson) ? turnOn("windcutoff"): turnOff("windcutoff");
+    (!radonon && wson) ? turnOn("windcutoffmap"): turnOff("windcutoffmap");
+    (!radonon && wson) ? turnOn("wsmax"): turnOff("wsmax");
+    (!radonon && wson) ? turnOn("wsmaxhd"): turnOff("wsmaxhd");
+
+
+    //ATGA
+    !radonon ? turnOn("ATGA2"): turnOff("ATGA2");
+    !radonon && getPageSetting('ATGA2') == true ? turnOn("ATGA2timer"): turnOff("ATGA2timer");
+    !radonon && getPageSetting('ATGA2') == true ? turnOn("ATGA2gen"): turnOff("ATGA2gen");
+    var ATGAon = (getPageSetting('ATGA2') == true && getPageSetting('ATGA2timer') > 0);
+    (!radonon && ATGAon) ? turnOn("zATGA2timer") : turnOff("zATGA2timer");
+    (!radonon && ATGAon && getPageSetting('zATGA2timer') > 0) ? turnOn("ztATGA2timer") : turnOff("ztATGA2timer");
+    (!radonon && ATGAon) ? turnOn("ATGA2timerz") : turnOff("ATGA2timerz");
+    (!radonon && ATGAon && getPageSetting('ATGA2timerz') > 0) ? turnOn("ATGA2timerzt") : turnOff("ATGA2timerzt");
+    (!radonon && ATGAon) ? turnOn("sATGA2timer") : turnOff("sATGA2timer");
+    (!radonon && ATGAon) ? turnOn("dsATGA2timer") : turnOff("dsATGA2timer");
+    (!radonon && ATGAon) ? turnOn("dATGA2timer") : turnOff("dATGA2timer");
+    (!radonon && ATGAon) ? turnOn("dhATGA2timer") : turnOff("dhATGA2timer");
+    (!radonon && ATGAon) ? turnOn("cATGA2timer") : turnOff("cATGA2timer");
+    (!radonon && ATGAon) ? turnOn("chATGA2timer") : turnOff("chATGA2timer");
+    (!radonon && ATGAon) ? turnOn("dATGA2Auto") : turnOff("dATGA2Auto");
+
+
+    //Combat
+    !radonon ? turnOn("DynamicGyms"): turnOff("DynamicGyms");
+    !radonon ? turnOn("AutoRoboTrimp"): turnOff("AutoRoboTrimp");
+    !radonon ? turnOn("addpoison"): turnOff("addpoison");
+    !radonon ? turnOn("fullice"): turnOff("fullice");
+    !radonon && getPageSetting('AutoStance')!=3 ? turnOn("IgnoreCrits") : turnOff("IgnoreCrits");
+
+
+    //Scryer
+    !radonon ? turnOn("UseScryerStance"): turnOff("UseScryerStance");
+    !radonon ? turnOn("ScryerUseWhenOverkill"): turnOff("ScryerUseWhenOverkill");
+    !radonon ? turnOn("ScryerMinZone"): turnOff("ScryerMinZone");
+    !radonon ? turnOn("ScryerMaxZone"): turnOff("ScryerMaxZone");
+    !radonon ? turnOn("onlyminmaxworld"): turnOff("onlyminmaxworld");
+    !radonon ? turnOn("ScryerUseinMaps2"): turnOff("ScryerUseinMaps2");
+    !radonon ? turnOn("ScryerUseinVoidMaps2"): turnOff("ScryerUseinVoidMaps2");
+    !radonon ? turnOn("ScryerUseinPMaps"): turnOff("ScryerUseinPMaps");
+    !radonon ? turnOn("ScryerUseinBW"): turnOff("ScryerUseinBW");
+    !radonon ? turnOn("ScryerUseinSpire2"): turnOff("ScryerUseinSpire2");
+    !radonon ? turnOn("ScryerSkipBoss2"): turnOff("ScryerSkipBoss2");
+    !radonon ? turnOn("ScryerSkipCorrupteds2"): turnOff("ScryerSkipCorrupteds2");
+    !radonon ? turnOn("ScryerSkipHealthy"): turnOff("ScryerSkipHealthy");
+    !radonon ? turnOn("ScryUseinPoison"): turnOff("ScryUseinPoison");
+    !radonon ? turnOn("ScryUseinWind"): turnOff("ScryUseinWind");
+    !radonon ? turnOn("ScryUseinIce"): turnOff("ScryUseinIce");
+    !radonon ? turnOn("ScryerDieZ"): turnOff("ScryerDieZ");
+    !radonon ? turnOn("screwessence"): turnOff("screwessence");
+
+
+    //Magma
+    !radonon ? turnOn("UseAutoGen"): turnOff("UseAutoGen");
+    !radonon ? turnOn("beforegen"): turnOff("beforegen");
+    !radonon ? turnOn("fuellater"): turnOff("fuellater");
+    !radonon ? turnOn("fuelend"): turnOff("fuelend");
+    !radonon ? turnOn("defaultgen"): turnOff("defaultgen");
+    !radonon ? turnOn("AutoGenDC"): turnOff("AutoGenDC");
+    !radonon ? turnOn("AutoGenC2"): turnOff("AutoGenC2");
+    !radonon ? turnOn("spendmagmite"): turnOff("spendmagmite");
+    !radonon ? turnOn("ratiospend"): turnOff("ratiospend");
+    var ratiospend = getPageSetting('ratiospend');
+    (!radonon && !ratiospend) ? turnOn("SupplyWall"): turnOff("SupplyWall");
+    (!radonon && !ratiospend) ? turnOn("spendmagmitesetting"): turnOff("spendmagmitesetting");
+    (!radonon && !ratiospend) ? turnOn("MagmiteExplain"): turnOff("MagmiteExplain");
+    (!radonon && ratiospend) ? turnOn("effratio"): turnOff("effratio");
+    (!radonon && ratiospend) ? turnOn("capratio"): turnOff("capratio");
+    (!radonon && ratiospend) ? turnOn("supratio"): turnOff("supratio");
+    (!radonon && ratiospend) ? turnOn("ocratio"): turnOff("ocratio");
+
+
+    //Golden
+    !radonon ? turnOn("AutoGoldenUpgrades"): turnOff("AutoGoldenUpgrades");
+    !radonon ? turnOn("dAutoGoldenUpgrades"): turnOff("dAutoGoldenUpgrades");
+    !radonon ? turnOn("cAutoGoldenUpgrades"): turnOff("cAutoGoldenUpgrades");
+    !radonon && getPageSetting('AutoGoldenUpgrades') == "Void" ? turnOn('voidheliumbattle') : turnOff('voidheliumbattle');
+    !radonon && getPageSetting('dAutoGoldenUpgrades') == "Void" ? turnOn('dvoidheliumbattle') : turnOff('dvoidheliumbattle');
+
+
+    //Nature
+    !radonon ? turnOn("AutoNatureTokens"): turnOff("AutoNatureTokens");
+    !radonon && getPageSetting('AutoNatureTokens') == true ? turnOn("tokenthresh"): turnOff("tokenthresh");
+    !radonon && getPageSetting('AutoNatureTokens') == true ? turnOn("AutoPoison"): turnOff("AutoPoison");
+    !radonon && getPageSetting('AutoNatureTokens') == true ? turnOn("AutoWind"): turnOff("AutoWind");
+    !radonon && getPageSetting('AutoNatureTokens') == true ? turnOn("AutoIce"): turnOff("AutoIce");
+
+    //Enlight
+    !radonon ? turnOn("autoenlight"): turnOff("autoenlight");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("pfillerenlightthresh"): turnOff("pfillerenlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("wfillerenlightthresh"): turnOff("wfillerenlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("ifillerenlightthresh"): turnOff("ifillerenlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("pdailyenlightthresh"): turnOff("pdailyenlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("wdailyenlightthresh"): turnOff("wdailyenlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("idailyenlightthresh"): turnOff("idailyenlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("pc2enlightthresh"): turnOff("pc2enlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("wc2enlightthresh"): turnOff("wc2enlightthresh");
+    !radonon && getPageSetting('autoenlight') == true ? turnOn("ic2enlightthresh"): turnOff("ic2enlightthresh");
+
+
+    //Display
+    (game.worldUnlocks.easterEgg.locked == false) ? turnOn('AutoEggs') : turnOff('AutoEggs');
+
 
     //Memory
     if (getPageSetting('showbreedtimer')==false) turnOff("hiddenBreedTimer");
     if (getPageSetting('showautomapstatus')==false) turnOff("autoMapStatus");
 
-    //Buildings
-    var fuckbuilding = (game.talents.autoStructure.purchased && game.talents.deciBuild.purchased && getPageSetting('hidebuildings')==true && getPageSetting('BuyBuildingsNew')==0);
-    (game.talents.autoStructure.purchased && game.talents.deciBuild.purchased) ? turnOn("hidebuildings") : turnOff("hidebuildings");
-    (!fuckbuilding) ? turnOn("MaxHut") : turnOff("MaxHut");
-    (!fuckbuilding) ? turnOn("MaxHouse") : turnOff("MaxHouse");
-    (!fuckbuilding) ? turnOn("MaxMansion") : turnOff("MaxMansion");
-    (!fuckbuilding) ? turnOn("MaxHotel") : turnOff("MaxHotel");
-    (!fuckbuilding) ? turnOn("MaxResort") : turnOff("MaxResort");
-    (!fuckbuilding) ? turnOn("MaxGateway") : turnOff("MaxGateway");
-    (!fuckbuilding) ? turnOn("MaxWormhole") : turnOff("MaxWormhole");
-    (!fuckbuilding) ? turnOn("MaxCollector") : turnOff("MaxCollector");
-    (!fuckbuilding) ? turnOn("MaxTribute") : turnOff("MaxTribute");
-    (!fuckbuilding) ? turnOn("MaxNursery") : turnOff("MaxNursery");
-    (!fuckbuilding) ? turnOn("NoNurseriesUntil") : turnOff("NoNurseriesUntil");
-    (!fuckbuilding) ? turnOn("WarpstationCap") : turnOff("WarpstationCap");
-    (!fuckbuilding) ? turnOn("WarpstationCoordBuy") : turnOff("WarpstationCoordBuy");
-    (!fuckbuilding) ? turnOn("FirstGigastation") : turnOff("FirstGigastation");
-    (!fuckbuilding) ? turnOn("DeltaGigastation") : turnOff("DeltaGigastation");
-    (!fuckbuilding) ? turnOn("WarpstationWall3") : turnOff("WarpstationWall3");
-
-    //Jobs
-    var fuckjobbies = (game.talents.autoJobs.purchased && getPageSetting('fuckjobs')==true && getPageSetting('BuyJobsNew')==0);
-    (game.talents.autoJobs.purchased) ? turnOn("fuckjobs") : turnOff("fuckjobs");
-    (!fuckjobbies) ? turnOn("FarmerRatio") : turnOff("FarmerRatio");
-    (!fuckjobbies) ? turnOn("LumberjackRatio") : turnOff("LumberjackRatio");
-    (!fuckjobbies) ? turnOn("MinerRatio") : turnOff("MinerRatio");
-    (!fuckjobbies) ? turnOn("MaxScientists") : turnOff("MaxScientists");
-    (!fuckjobbies) ? turnOn("MaxExplorers") : turnOff("MaxExplorers");
-    (!fuckjobbies) ? turnOn("MaxTrainers") : turnOff("MaxTrainers");
-
-    //AutoStance
-    getPageSetting('AutoStance')!=3 ? turnOn("IgnoreCrits") : turnOff("IgnoreCrits");
-
-    //Windstack
-    var wson = (getPageSetting('AutoStance')==3);
-    (wson) ? turnOff("turnwson"): turnOn("turnwson");
-    (wson) ? turnOn("windhealthy"): turnOff("windhealthy");
-    (wson) ? turnOn("usebstance"): turnOff("usebstance");
-    (wson) ? turnOn("WindStackingMin"): turnOff("WindStackingMin");
-    (wson) ? turnOn("WindStackingMinHD"): turnOff("WindStackingMinHD");
-    (wson) ? turnOn("WindStackingMax"): turnOff("WindStackingMax");
-    (wson) ? turnOn("windcutoff"): turnOff("windcutoff");
-    (wson) ? turnOn("windcutoffmap"): turnOff("windcutoffmap");
-    (wson) ? turnOn("wsmax"): turnOff("wsmax");
-    (wson) ? turnOn("wsmaxhd"): turnOff("wsmaxhd");
-
-    //Core
-    (getPageSetting('ManualGather2')==2 && game.talents.foreman.purchased) ? turnOn("gathermetal"): turnOff("gathermetal");
-    getPageSetting('amalcoord')==true ? turnOn("amalcoordt"): turnOff("amalcoordt");
-    getPageSetting('amalcoord')==true ? turnOn("amalcoordhd"): turnOff("amalcoordhd");
-    getPageSetting('amalcoord')==true ? turnOn("amalcoordz"): turnOff("amalcoordz");
-    getPageSetting('AutoAllocatePerks')==1 ? turnOn("fastallocate"): turnOff("fastallocate");
-
-    //Raid
-    getPageSetting('Praidingzone') != -1 ? turnOn('PraidHarder') : turnOff('PraidHarder');
-    getPageSetting('PraidHarder') ? turnOn('PraidFarmFragsZ') : turnOff('PraidFarmFragsZ');
-    getPageSetting('PraidHarder') ? turnOn('PraidBeforeFarmZ') : turnOff('PraidBeforeFarmZ');
-    getPageSetting('PraidHarder') ? turnOn('MaxPraidZone') : turnOff('MaxPraidZone');
-    getPageSetting('BWraid')==true ? turnOn("BWraidingz"): turnOff("BWraidingz");
-    getPageSetting('BWraid')==true ? turnOn("BWraidingmax"): turnOff("BWraidingmax");
-
-    //Daily
-    //DRaid
-    getPageSetting('dPraidingzone') != -1 ? turnOn('dPraidHarder') : turnOff('dPraidHarder');
-    getPageSetting('dPraidHarder') ? turnOn('dPraidFarmFragsZ') : turnOff('dPraidFarmFragsZ');
-    getPageSetting('dPraidHarder') ? turnOn('dPraidBeforeFarmZ') : turnOff('dPraidBeforeFarmZ');
-    getPageSetting('dPraidHarder') ? turnOn('dMaxPraidZone') : turnOff('dMaxPraidZone');
-    getPageSetting('Dailybwraid')==true ? turnOn("dBWraidingz"): turnOff("dBWraidingz");
-    getPageSetting('Dailybwraid')==true ? turnOn("dBWraidingmax"): turnOff("dBWraidingmax");
-    //DWind
-    getPageSetting('use3daily')==true ? turnOn("dwindhealthy"): turnOff("dwindhealthy");
-    getPageSetting('use3daily')==true ? turnOn("dusebstance"): turnOff("dusebstance");
-    getPageSetting('use3daily')==true ? turnOn("dWindStackingMin"): turnOff("dWindStackingMin");
-    getPageSetting('use3daily')==true ? turnOn("dWindStackingMinHD"): turnOff("dWindStackingMinHD");
-    getPageSetting('use3daily')==true ? turnOn("dWindStackingMax"): turnOff("dWindStackingMax");
-    getPageSetting('use3daily')==true ? turnOn("dwindcutoff"): turnOff("dwindcutoff");
-    getPageSetting('use3daily')==true ? turnOn("dwindcutoffmap"): turnOff("dwindcutoffmap");
-    getPageSetting('use3daily')==true ? turnOn("dwsmax"): turnOff("dwsmax");
-    getPageSetting('use3daily')==true ? turnOn("dwsmaxhd"): turnOff("dwsmaxhd");
-    //DLoom
-    getPageSetting('dloomswap') > 0 ? turnOn('dloomswaphd') : turnOff('dloomswaphd');
-
-    //C2
-    getPageSetting('c2runnerstart') == true ? turnOn("c2runnerportal"): turnOff("c2runnerportal");
-    getPageSetting('c2runnerstart') == true ? turnOn("c2runnerpercent"): turnOff("c2runnerpercent");
-
-    //Magma
-    var ratiospend = getPageSetting('ratiospend');
-    (!ratiospend) ? turnOn("SupplyWall"): turnOff("SupplyWall");
-    (!ratiospend) ? turnOn("spendmagmitesetting"): turnOff("spendmagmitesetting");
-    (!ratiospend) ? turnOn("MagmiteExplain"): turnOff("MagmiteExplain");
-    (ratiospend) ? turnOn("effratio"): turnOff("effratio");
-    (ratiospend) ? turnOn("capratio"): turnOff("capratio");
-    (ratiospend) ? turnOn("supratio"): turnOff("supratio");
-    (ratiospend) ? turnOn("ocratio"): turnOff("ocratio");
-
-    //ATGA
-    getPageSetting('ATGA2') == true ? turnOn("ATGA2timer"): turnOff("ATGA2timer");
-    getPageSetting('ATGA2') == true ? turnOn("ATGA2gen"): turnOff("ATGA2gen");
-    var ATGAon = (getPageSetting('ATGA2') == true && getPageSetting('ATGA2timer') > 0);
-    (ATGAon) ? turnOn("zATGA2timer") : turnOff("zATGA2timer");
-    (ATGAon && getPageSetting('zATGA2timer') > 0) ? turnOn("ztATGA2timer") : turnOff("ztATGA2timer");
-    (ATGAon) ? turnOn("ATGA2timerz") : turnOff("ATGA2timerz");
-    (ATGAon && getPageSetting('ATGA2timerz') > 0) ? turnOn("ATGA2timerzt") : turnOff("ATGA2timerzt");
-    (ATGAon) ? turnOn("sATGA2timer") : turnOff("sATGA2timer");
-    (ATGAon) ? turnOn("dsATGA2timer") : turnOff("dsATGA2timer");
-    (ATGAon) ? turnOn("dATGA2timer") : turnOff("dATGA2timer");
-    (ATGAon) ? turnOn("dhATGA2timer") : turnOff("dhATGA2timer");
-    (ATGAon) ? turnOn("cATGA2timer") : turnOff("cATGA2timer");
-    (ATGAon) ? turnOn("chATGA2timer") : turnOff("chATGA2timer");
-    (ATGAon) ? turnOn("dATGA2Auto") : turnOff("dATGA2Auto");
-
-    //Display
-    (game.worldUnlocks.easterEgg.locked == false) ? turnOn('AutoEggs') : turnOff('AutoEggs');
 
     //Heirlooms
     var nuratio = (getPageSetting('rationu')==0 && getPageSetting('autonu')==true);
@@ -1186,14 +1354,12 @@ function updateCustomButtons() {
     (keepcoreenable) ? turnOn('slot3modcr') : turnOff('slot3modcr');
     (keepcoreenable) ? turnOn('slot4modcr') : turnOff('slot4modcr');
 
-    //Golden
-    getPageSetting('AutoGoldenUpgrades') == "Void" ? turnOn('voidheliumbattle') : turnOff('voidheliumbattle');
-    getPageSetting('dAutoGoldenUpgrades') == "Void" ? turnOn('dvoidheliumbattle') : turnOff('dvoidheliumbattle');
 
     //Dropdowns
     document.getElementById('AutoPortal').value = autoTrimpSettings.AutoPortal.selected;
     document.getElementById('HeliumHourChallenge').value = autoTrimpSettings.HeliumHourChallenge.selected;
     document.getElementById('dHeliumHourChallenge').value = autoTrimpSettings.dHeliumHourChallenge.selected;
+    document.getElementById('mapselection').value = autoTrimpSettings.mapselection.selected;
     document.getElementById('AutoGoldenUpgrades').value = autoTrimpSettings.AutoGoldenUpgrades.selected;
     document.getElementById('dAutoGoldenUpgrades').value = autoTrimpSettings.dAutoGoldenUpgrades.selected;
     document.getElementById('cAutoGoldenUpgrades').value = autoTrimpSettings.cAutoGoldenUpgrades.selected;
