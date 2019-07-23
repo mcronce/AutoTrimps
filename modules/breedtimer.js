@@ -1,6 +1,69 @@
 MODULES["breedtimer"] = {};
 MODULES["breedtimer"].voidCheckPercent = 95;
 
+function getTargetBreedTimer() {
+	var timer_setting;
+
+	if(game.global.challengeActive == "Daily") {
+		var auto_setting = getPageSetting('dATGA2Auto');
+		var is_bogged = game.global.dailyChallenge.bogged !== undefined;
+		var is_plauge = game.global.dailyChallenge.plague !== undefined;
+		if((auto_setting == 2 || (auto_setting == 1 && disActiveSpireAT())) && (is_bogged || is_plague)) {
+			var plagueDamagePerStack = is_plague ? dailyModifiers.plague.getMult(game.global.dailyChallenge.plague.strength, 1) : 0;
+			var boggedDamage = is_bogged ? dailyModifiers.bogged.getMult(game.global.dailyChallenge.bogged.strength) : 0;
+			var atl = Math.ceil((Math.sqrt((plagueDamagePerStack / 2 + boggedDamage) ** 2 - 2 * plagueDamagePerStack * (boggedDamage - 1)) - (plagueDamagePerStack / 2 + boggedDamage)) / plagueDamagePerStack);
+			return new Decimal(Math.ceil(isNaN(atl) ? target : atl / 1000 * (((game.portal.Agility.level) ? 1000 * Math.pow(1 - game.portal.Agility.modifier, game.portal.Agility.level) : 1000) + ((game.talents.hyperspeed2.purchased && (game.global.world <= Math.floor((game.global.highestLevelCleared + 1) * 0.5))) || (game.global.mapExtraBonus == "fa")) * -100 + (game.talents.hyperspeed.purchased) * -100)));
+		}
+
+		timer_setting = getPageSetting('dsATGA2timer');
+		if(timer_setting > 0 && disActiveSpireAT()) {
+			return new Decimal(timer_setting);
+		}
+
+		timer_setting = getPageSetting('dhATGA2timer');
+		if(timer_setting > 0 && (is_bogged || is_plague || game.global.dailyChallenge.pressure !== undefined)) {
+			return new Decimal(timer_setting);
+		}
+
+		timer_setting = getPageSetting('dATGA2timer');
+		if(timer_setting > 0) {
+			return new Decimal(timer_setting);
+		}
+	} else if(game.global.runningChallengeSquared) {
+		timer_setting = getPageSetting('chATGA2timer');
+		if(game.global.challengeActive == 'Electricity' || game.global.challengeActive == 'Toxicity' || game.global.challengeActive == 'Nom') {
+			if(timer_setting > 0) {
+				return new Decimal(timer_setting);
+			}
+		} else {
+			timer_setting = getPageSetting('cATGA2timer');
+			if(timer_setting > 0) {
+				return new Decimal(timer_setting);
+			}
+		}
+	}
+
+	var zone_setting;
+	timer_setting = getPageSetting('ztATGA2timer');
+	zone_setting = getPageSetting('zATGA2timer');
+	if(timer_setting > 0 && zone_setting > 0 && game.global.world < zone_setting) {
+		return new Decimal(timer_setting);
+	}
+
+	timer_setting = getPageSetting('ATGA2timerzt');
+	zone_setting = getPageSetting('ATGA2timerz');
+	if(timer_setting > 0 && zone_setting > 0 && game.global.world >= zone_setting) {
+		return new Decimal(timer_setting);
+	}
+
+	timer_setting = getPageSetting('ATGA2timer');
+	if(timer_setting > 0) {
+		return new Decimal(timer_setting);
+	}
+
+	return new Decimal(0);
+}
+
 var DecimalBreed = Decimal.clone({precision: 30, rounding: 4});
 var missingTrimps = new DecimalBreed(0);
 function ATGA2() {
