@@ -7,7 +7,7 @@ function getTargetBreedTimer() {
 	if(game.global.challengeActive == "Daily") {
 		var auto_setting = getPageSetting('dATGA2Auto');
 		var is_bogged = game.global.dailyChallenge.bogged !== undefined;
-		var is_plauge = game.global.dailyChallenge.plague !== undefined;
+		var is_plague = game.global.dailyChallenge.plague !== undefined;
 		if((auto_setting == 2 || (auto_setting == 1 && disActiveSpireAT())) && (is_bogged || is_plague)) {
 			var plagueDamagePerStack = is_plague ? dailyModifiers.plague.getMult(game.global.dailyChallenge.plague.strength, 1) : 0;
 			var boggedDamage = is_bogged ? dailyModifiers.bogged.getMult(game.global.dailyChallenge.bogged.strength) : 0;
