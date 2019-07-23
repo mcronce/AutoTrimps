@@ -110,7 +110,7 @@ function betterAutoFight2() {
         targetBreed = getTargetBreedTimer();
     }
     if(game.global.spireActive) {
-        if((game.global.lastBreedtime / 1000) >= targetBreed && (game.global.lastBreedtime / 1000) >= breedTimerLimit) {
+        if((game.global.lastBreedtime / 1000) >= targetBreed) {
             fightMaybe();
         }
     } else if(game.global.soldierHealth > 0 && getPageSetting('AutoMaps') == 1) {
