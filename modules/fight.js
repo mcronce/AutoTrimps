@@ -109,7 +109,7 @@ function betterAutoFight2() {
     } else {
         targetBreed = getTargetBreedTimer();
     }
-    if(game.global.spireActive) {
+    if(isActiveSpireAT() || disActiveSpireAT()) {
         if((game.global.lastBreedtime / 1000) >= targetBreed) {
             fightMaybe();
         }
