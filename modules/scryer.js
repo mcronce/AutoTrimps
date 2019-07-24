@@ -1,4 +1,15 @@
 var wantToScry = false;
+
+function autostancefunction(auto_stance, current_enemy) {
+    if(should_windstack(current_enemy)) {
+        windStance();
+    } else if (auto_stance == 1) {
+        autoStance();
+    } else if (auto_stance == 2) {
+        autoStance2();
+    }
+}
+
 function useScryerStance() {
     var scry = 4;
     var curEnemy = getCurrentEnemy(1);
@@ -8,15 +19,6 @@ function useScryerStance() {
     }
 
     var AutoStance = getPageSetting('AutoStance');
-    function autostancefunction() {
-        if(should_windstack(curEnemy)) {
-            windStance();
-        } else if (AutoStance == 1) {
-            autoStance();
-        } else if (AutoStance == 2) {
-            autoStance2();
-        }
-    }
 
     //Never
     var never_scry = game.global.preMapsActive || game.global.gridArray.length === 0 || game.global.highestLevelCleared < 180;
