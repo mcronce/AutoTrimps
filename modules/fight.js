@@ -101,7 +101,7 @@ function betterAutoFight2() {
     }
     var breeding = (game.resources.trimps.owned - game.resources.trimps.employed);
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
-    var adjustedMax = (game.portal.Coordinated.level) ? game.portal.Coordinated.currentSend : trimps.maxSoldiers;
+    var adjustedMax = (game.portal.Coordinated.level) ? game.portal.Coordinated.currentSend : game.resources.trimps.maxSoldiers;
     var lowLevelFight = (adjustedMax < 0.5 * breeding) && (breeding > 0.1 * game.resources.trimps.realMax());
     var targetBreed;
     if(game.global.GeneticistassistSetting != -1) {
