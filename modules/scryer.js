@@ -87,14 +87,14 @@ function useScryerStance() {
 
     //check Corrupted Force
     if ((iscorrupt && getPageSetting('ScryerSkipCorrupteds2') == 1 && getPageSetting('UseScryerStance') == true) || (use_scryer)) {
-        setFormation(scry);
         wantToScry = true;
+        scryMaybe(scry, AutoStance, curEnemy);
         return;
     }
     //check healthy force
     if ((ishealthy && getPageSetting('ScryerSkipHealthy') == 1 && getPageSetting('UseScryerStance') == true) || (use_scryer)) {
-        setFormation(scry);
         wantToScry = true;
+        scryMaybe(scry, AutoStance, curEnemy);
         return;
     }
 
@@ -139,8 +139,9 @@ function useScryerStance() {
         var ovkldmg = minDamage * Sstance * (game.portal.Overkill.level*0.005);
         var ovklHDratio = getCurrentEnemy(1).maxHealth / ovkldmg;
         if (ovklHDratio < 2) {
-            if (oktoswitch) {
-                setFormation(scry);
+            if(oktoswitch) {
+                wantToScry = true;
+                scryMaybe(scry, AutoStance, curEnemy);
             }
             return;
         }
@@ -160,8 +161,8 @@ function useScryerStance() {
 
     if (getPageSetting('UseScryerStance') == true && valid_min && valid_max && !(getPageSetting('onlyminmaxworld') == true && game.global.mapsActive)) {
         if (oktoswitch) {
-            setFormation(scry);
             wantToScry = true;
+            scryMaybe(scry, AutoStance, curEnemy);
             return;
         }
     } else {
