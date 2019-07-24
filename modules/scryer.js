@@ -65,15 +65,15 @@ function useScryerStance() {
     //check Corrupted Never
     var iscorrupt = curEnemy && curEnemy.mutation == "Corruption";
     if (((never_scry) || getPageSetting('UseScryerStance') == true && !game.global.mapsActive && (iscorrupt && getPageSetting('ScryerSkipCorrupteds2') == 0))) {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
     //check Healthy never
     var ishealthy = curEnemy && curEnemy.mutation == "Healthy";
     if (((never_scry) || getPageSetting('UseScryerStance') == true && !game.global.mapsActive && (ishealthy && getPageSetting('ScryerSkipHealthy') == 0))) {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
 
@@ -153,8 +153,8 @@ function useScryerStance() {
     var valid_max = max_zone <= 0 || game.global.world < max_zone;
 
     if(getPageSetting('ScryerUseinMaps2') == 3 && game.global.mapsActive) {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
 
@@ -165,8 +165,8 @@ function useScryerStance() {
             return;
         }
     } else {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
 }
