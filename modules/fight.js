@@ -103,14 +103,8 @@ function betterAutoFight2() {
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
     var adjustedMax = (game.portal.Coordinated.level) ? game.portal.Coordinated.currentSend : game.resources.trimps.maxSoldiers;
     var lowLevelFight = (adjustedMax < 0.5 * breeding) && (breeding > 0.1 * game.resources.trimps.realMax());
-    var targetBreed;
-    if(game.global.GeneticistassistSetting != -1) {
-        targetBreed = game.global.GeneticistassistSetting;
-    } else {
-        targetBreed = getTargetBreedTimer();
-    }
     if(!game.global.mapsActive && (isActiveSpireAT() || disActiveSpireAT())) {
-        if((game.global.lastBreedtime / 1000) >= targetBreed) {
+        if(game.resources.trimps.owned == game.resources.trimps.realMax()) {
             fightMaybe();
         }
     } else if(game.global.soldierHealth > 0 && getPageSetting('AutoMaps') == 1) {
