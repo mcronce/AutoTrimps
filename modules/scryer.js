@@ -10,6 +10,36 @@ function autostancefunction(auto_stance, current_enemy) {
     }
 }
 
+function scryMaybe(scry_stance, auto_stance, current_enemy) {
+    if(!getPageSetting('scry_cheat')) {
+        setFormation(scry_stance);
+        return;
+    }
+
+    if(game.global.mapsActive) {
+        setFormation(scry_stance);
+        return;
+    }
+
+    var roll = getRandomIntSeeded(game.global.scrySeed, 0, 100);
+    if(roll == 50 || roll == 51 || roll == 52) {
+        setFormation(scry_stance);
+        return;
+    }
+
+    var lookahead_cells = 1 + (calcMaxOverkill() * 2);
+    for(var i = 1; i <= lookahead_cells && game.global.lastClearedCell + i < 100; i++) {
+        roll = getRandomIntSeeded(game.global.scrySeed + i, 0, 100);
+        if(roll == 50 || roll == 51 || roll == 52) {
+            setFormation(scry_stance);
+            return;
+        }
+    }
+
+    wantToScry = false;
+    autostancefunction(auto_stance, current_enemy);
+}
+
 function useScryerStance() {
     var scry = 4;
     var curEnemy = getCurrentEnemy(1);
