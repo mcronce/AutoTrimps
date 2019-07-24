@@ -2,6 +2,25 @@ var critCC = 1;
 var critDD = 1;
 var trimpAA = 1;
 
+function calcMaxOverkill() {
+    var overkiller_count = Fluffy.isRewardActive('overkiller');
+    if(game.talents.overkill.purchased) {
+        overkiller_count++;
+    }
+    if(getEmpowerment() == 'Ice') {
+        if(game.empowerments.Ice.level >= 50) {
+            overkiller_count++;
+            if(game.empowerments.Ice.level >= 100) {
+                overkiller_count++;
+            }
+        }
+    }
+    if(getUberEmpowerment() == 'Ice') {
+        overkiller_count += 2;
+    }
+    return overkiller_count;
+}
+
 function getTrimpAttack() {
     var dmg = 6;
     var equipmentList = ["Dagger", "Mace", "Polearm", "Battleaxe", "Greatsword", "Arbalest"];
