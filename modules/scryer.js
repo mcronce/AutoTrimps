@@ -1,4 +1,45 @@
 var wantToScry = false;
+
+function autostancefunction(auto_stance, current_enemy) {
+    if(should_windstack(current_enemy)) {
+        windStance();
+    } else if (auto_stance == 1) {
+        autoStance();
+    } else if (auto_stance == 2) {
+        autoStance2();
+    }
+}
+
+function scryMaybe(scry_stance, auto_stance, current_enemy) {
+    if(!getPageSetting('scry_cheat')) {
+        setFormation(scry_stance);
+        return;
+    }
+
+    if(game.global.mapsActive) {
+        setFormation(scry_stance);
+        return;
+    }
+
+    var roll = getRandomIntSeeded(game.global.scrySeed, 0, 100);
+    if(roll == 50 || roll == 51 || roll == 52) {
+        setFormation(scry_stance);
+        return;
+    }
+
+    var lookahead_cells = 1 + (calcMaxOverkill() * 2);
+    for(var i = 1; i <= lookahead_cells && game.global.lastClearedCell + i < 100; i++) {
+        roll = getRandomIntSeeded(game.global.scrySeed + i, 0, 100);
+        if(roll == 50 || roll == 51 || roll == 52) {
+            setFormation(scry_stance);
+            return;
+        }
+    }
+
+    wantToScry = false;
+    autostancefunction(auto_stance, current_enemy);
+}
+
 function useScryerStance() {
     var scry = 4;
     var curEnemy = getCurrentEnemy(1);
@@ -8,15 +49,6 @@ function useScryerStance() {
     }
 
     var AutoStance = getPageSetting('AutoStance');
-    function autostancefunction() {
-        if(should_windstack(curEnemy)) {
-            windStance();
-        } else if (AutoStance == 1) {
-            autoStance();
-        } else if (AutoStance == 2) {
-            autoStance2();
-        }
-    }
 
     //Never
     var never_scry = game.global.preMapsActive || game.global.gridArray.length === 0 || game.global.highestLevelCleared < 180;
@@ -33,15 +65,15 @@ function useScryerStance() {
     //check Corrupted Never
     var iscorrupt = curEnemy && curEnemy.mutation == "Corruption";
     if (((never_scry) || getPageSetting('UseScryerStance') == true && !game.global.mapsActive && (iscorrupt && getPageSetting('ScryerSkipCorrupteds2') == 0))) {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
     //check Healthy never
     var ishealthy = curEnemy && curEnemy.mutation == "Healthy";
     if (((never_scry) || getPageSetting('UseScryerStance') == true && !game.global.mapsActive && (ishealthy && getPageSetting('ScryerSkipHealthy') == 0))) {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
 
@@ -55,14 +87,14 @@ function useScryerStance() {
 
     //check Corrupted Force
     if ((iscorrupt && getPageSetting('ScryerSkipCorrupteds2') == 1 && getPageSetting('UseScryerStance') == true) || (use_scryer)) {
-        setFormation(scry);
         wantToScry = true;
+        scryMaybe(scry, AutoStance, curEnemy);
         return;
     }
     //check healthy force
     if ((ishealthy && getPageSetting('ScryerSkipHealthy') == 1 && getPageSetting('UseScryerStance') == true) || (use_scryer)) {
-        setFormation(scry);
         wantToScry = true;
+        scryMaybe(scry, AutoStance, curEnemy);
         return;
     }
 
@@ -107,8 +139,9 @@ function useScryerStance() {
         var ovkldmg = minDamage * Sstance * (game.portal.Overkill.level*0.005);
         var ovklHDratio = getCurrentEnemy(1).maxHealth / ovkldmg;
         if (ovklHDratio < 2) {
-            if (oktoswitch) {
-                setFormation(scry);
+            if(oktoswitch) {
+                wantToScry = true;
+                scryMaybe(scry, AutoStance, curEnemy);
             }
             return;
         }
@@ -121,20 +154,20 @@ function useScryerStance() {
     var valid_max = max_zone <= 0 || game.global.world < max_zone;
 
     if(getPageSetting('ScryerUseinMaps2') == 3 && game.global.mapsActive) {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
 
     if (getPageSetting('UseScryerStance') == true && valid_min && valid_max && !(getPageSetting('onlyminmaxworld') == true && game.global.mapsActive)) {
         if (oktoswitch) {
-            setFormation(scry);
             wantToScry = true;
+            scryMaybe(scry, AutoStance, curEnemy);
             return;
         }
     } else {
-        autostancefunction();
         wantToScry = false;
+        autostancefunction(AutoStance, curEnemy);
         return;
     }
 }
