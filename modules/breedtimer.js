@@ -12,7 +12,9 @@ function getTargetBreedTimer() {
 			var plagueDamagePerStack = is_plague ? dailyModifiers.plague.getMult(game.global.dailyChallenge.plague.strength, 1) : 0;
 			var boggedDamage = is_bogged ? dailyModifiers.bogged.getMult(game.global.dailyChallenge.bogged.strength) : 0;
 			var atl = Math.ceil((Math.sqrt((plagueDamagePerStack / 2 + boggedDamage) ** 2 - 2 * plagueDamagePerStack * (boggedDamage - 1)) - (plagueDamagePerStack / 2 + boggedDamage)) / plagueDamagePerStack);
-			return new Decimal(Math.ceil(isNaN(atl) ? target : atl / 1000 * (((game.portal.Agility.level) ? 1000 * Math.pow(1 - game.portal.Agility.modifier, game.portal.Agility.level) : 1000) + ((game.talents.hyperspeed2.purchased && (game.global.world <= Math.floor((game.global.highestLevelCleared + 1) * 0.5))) || (game.global.mapExtraBonus == "fa")) * -100 + (game.talents.hyperspeed.purchased) * -100)));
+			if(!isNaN(atl)) {
+				return new Decimal(Math.ceil(atl / 1000 * (((game.portal.Agility.level) ? 1000 * Math.pow(1 - game.portal.Agility.modifier, game.portal.Agility.level) : 1000) + ((game.talents.hyperspeed2.purchased && (game.global.world <= Math.floor((game.global.highestLevelCleared + 1) * 0.5))) || (game.global.mapExtraBonus == "fa")) * -100 + (game.talents.hyperspeed.purchased) * -100)));
+			}
 		}
 
 		timer_setting = getPageSetting('dsATGA2timer');
