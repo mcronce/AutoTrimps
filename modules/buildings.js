@@ -398,7 +398,7 @@ function RbuyFoodEfficientHousing() {
     if (game.buildings[bb.name].owned < max || max == -1) {
         bestfoodBuilding = bb.name;
     }
-    if (bestfoodBuilding) {
+    if (smithylogic(bestfoodBuilding, 'wood', false) && bestfoodBuilding) {
         document.getElementById(bestfoodBuilding).style.border = "1px solid #00CC01";
         RsafeBuyBuilding(bestfoodBuilding);
     }
@@ -406,7 +406,7 @@ function RbuyFoodEfficientHousing() {
 }
 
 function RbuyGemEfficientHousing() {
-    var gemHousing = ["Hotel", "Resort", "Gateway", "Collector"];
+    var gemHousing = ["Mansion", "Hotel", "Resort", "Gateway", "Collector"];
     var unlockedHousing = [];
     for (var house in gemHousing) {
         if (game.buildings[gemHousing[house]].locked === 0) {
@@ -431,10 +431,10 @@ function RbuyGemEfficientHousing() {
         if (game.buildings[keysSorted[best]].owned < max || max == -1) {
             bestBuilding = keysSorted[best];
             document.getElementById(bestBuilding).style.border = "1px solid #00CC00";
+            break;
         }
-        break;
     }
-	if (bestBuilding) {
+    if (smithylogic(bestBuilding, 'gems', false) && bestBuilding) {
         RsafeBuyBuilding(bestBuilding);
     }
 }
@@ -448,7 +448,7 @@ function RbuyBuildings() {
     if (!game.buildings.Smithy.locked && canAffordBuilding('Smithy') && game.global.challengeActive != "Quest") {
         RsafeBuyBuilding('Smithy');
     }
-    if (!game.buildings.Smithy.locked && canAffordBuilding('Smithy') && game.global.challengeActive == "Quest" && ((questcheck() != 7) || (RcalcHDratio() * 10 >= getPageSetting('Rmapcuntoff')))) {
+    if (!game.buildings.Smithy.locked && canAffordBuilding('Smithy') && game.global.challengeActive == "Quest" && ((questcheck() == 7) || (RcalcHDratio() * 10 >= getPageSetting('Rmapcuntoff')))) {
         RsafeBuyBuilding('Smithy');
     }	
     if (!game.buildings.Microchip.locked && canAffordBuilding('Microchip')) {

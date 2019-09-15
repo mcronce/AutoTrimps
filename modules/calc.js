@@ -306,7 +306,9 @@ function calcOurDmg(minMaxAvg, incStance, incFlucts) {
     if (Fluffy.isActive()) {
         number *= Fluffy.getDamageModifier();
     }
-
+    if (getHeirloomBonus("Shield", "gammaBurst") > 0 && (calcOurHealth() / (calcBadGuyDmg(null, getEnemyMaxAttack(game.global.world, 50, 'Snimp', 1.0))) >= 5)) {
+        number *= ((getHeirloomBonus("Shield", "gammaBurst") / 100) + 1) / 5;
+    }
 
     if (!incStance && game.global.formation != 0) {
         number /= (game.global.formation == 2) ? 4 : 0.5;
@@ -882,7 +884,7 @@ function RcalcOurHealth() {
 	
     //Pris
 	
-    health += getMaxEnergyShield();
+    health *= (getEnergyShieldMult() + 1);
 	
     return health;
 }

@@ -10,7 +10,7 @@
 // @connect      *mcronce.github.io/AutoTrimps*
 // @connect      *trimps.github.io*
 // @connect      self
-// @grant        none
+// @grant        GM_xmlhttpRequest 
 // ==/UserScript==
 
 var script = document.createElement('script');

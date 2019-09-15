@@ -166,8 +166,14 @@ function autoMap() {
 
     //Void Vars
     var voidMapLevelSetting = 0;
-    var voidMapLevelSettingCell = 70;
+    var voidMapLevelSettingCell;
     var voidMapLevelPlus = 0;
+    if (game.global.challengeActive != "Daily") {
+	voidMapLevelSettingCell = ((getPageSetting('voidscell') > 0) ? getPageSetting('voidscell') : 70);
+    }
+    if (game.global.challengeActive == "Daily") {
+	voidMapLevelSettingCell = ((getPageSetting('dvoidscell') > 0) ? getPageSetting('dvoidscell') : 70);
+    }
     if (game.global.challengeActive != "Daily" && getPageSetting('VoidMaps') > 0) {
         voidMapLevelSetting = getPageSetting('VoidMaps');
     }
@@ -394,11 +400,13 @@ function autoMap() {
 
     //Maps
     vanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.global.canMapAtZone && !isActiveSpireAT() && !disActiveSpireAT());
-    if (vanillaMapatZone)
+    if (vanillaMapatZone) {
         for (var x = 0; x < game.options.menu.mapAtZone.setZone.length; x++) {
-            if (game.global.world == game.options.menu.mapAtZone.setZone[x])
+            if (game.global.world == game.options.menu.mapAtZone.setZone[x].world)
                 shouldDoMaps = true;
         }
+    }
+    
     var siphlvl = shouldFarmLowerZone ? game.global.world - 10 : game.global.world - game.portal.Siphonology.level;
     var maxlvl = game.talents.mapLoot.purchased ? game.global.world - 1 : game.global.world;
     maxlvl += extraMapLevels;
@@ -611,7 +619,7 @@ function autoMap() {
     }
 
     //Skip Spires
-    if (getPageSetting('SkipSpires') == 1 && ((game.global.challengeActive != 'Daily' && isActiveSpireAT()) || (game.global.challengeActive == 'Daily' && disActiveSpireAT()))) {
+    if (!preSpireFarming && getPageSetting('SkipSpires') == 1 && ((game.global.challengeActive != 'Daily' && isActiveSpireAT()) || (game.global.challengeActive == 'Daily' && disActiveSpireAT()))) {
         enoughDamage = true;
         enoughHealth = true;
         shouldFarm = false;
@@ -817,6 +825,7 @@ var RmapTimeEstimate=0;
 var RlastMapWeWereIn=null;
 var RdoMaxMapBonus=!1;
 var RvanillaMapatZone=!1;
+var Rtimefarm=!1;
 var RadditionalCritMulti=2<getPlayerCritChance()?25:5;
 
 function RupdateAutoMapsStatus(get) {
@@ -970,11 +979,8 @@ function RautoMap() {
         if (game.options.menu.repeatUntil.enabled == 1 && RshouldFarm)
             toggleSetting('repeatUntil');
     }
-    var mapbonusmulti = 1 + (0.20 * game.global.mapBonus);
-    var ourBaseDamage2 = ourBaseDamage;
-    ourBaseDamage2 /= mapbonusmulti;
     RenoughHealth = (RcalcOurHealth() > hitsSurvived * enemyDamage);
-    RenoughDamage = (ourBaseDamage * mapenoughdamagecutoff > enemyHealth);
+    RenoughDamage = (RcalcHDratio() <= mapenoughdamagecutoff);
     RupdateAutoMapsStatus();
 
     //Farming
@@ -986,7 +992,7 @@ function RautoMap() {
     var shouldDoHealthMaps = false;
     if (game.global.mapBonus >= getPageSetting('RMaxMapBonuslimit') && !RshouldFarm)
         RshouldDoMaps = false;
-    else if (game.global.mapBonus < getPageSetting('RMaxMapBonushealth') && !RenoughHealth && !RshouldDoMaps && !RneedPrestige) {
+    else if (game.global.mapBonus < getPageSetting('RMaxMapBonushealth') && !RenoughHealth && !RshouldDoMaps) {
         RshouldDoMaps = true;
         shouldDoHealthMaps = true;
     }
@@ -1022,13 +1028,31 @@ function RautoMap() {
         RshouldDoMaps = true;
 
     //Maps
-    vanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.global.canMapAtZone);
-    if (vanillaMapatZone) {
-        for (var x = 0; x < game.options.menu.mapAtZone.setZone.length; x++) {
-            if (game.global.world == game.options.menu.mapAtZone.setZone[x])
+    RvanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.global.canMapAtZone);
+    if (RvanillaMapatZone) {
+        for (var x = 0; x < game.options.menu.mapAtZone.setZoneU2.length; x++) {
+            if (game.global.world == game.options.menu.mapAtZone.setZoneU2[x].world)
                 RshouldDoMaps = true;
         }
     }
+	
+    //Time Farm
+    Rtimefarm = (game.global.world > 5 && (game.global.challengeActive != "Daily" && getPageSetting('Rtimefarmzone')[0] > 0 && getPageSetting('Rtimefarmtime')[0] > 0));
+    if (Rtimefarm) {
+	var timefarmzone;
+	var timefarmtime;
+	var time = ((new Date().getTime() - game.global.zoneStarted) / 1000 / 60);
+	timefarmzone = getPageSetting('Rtimefarmzone');
+	timefarmtime = getPageSetting('Rtimefarmtime');
+
+	var timefarmindex = timefarmzone.indexOf(game.global.world);
+	var timezones = timefarmtime[timefarmindex];
+
+	if (!RshouldDoMaps && timefarmzone.includes(game.global.world) && timezones > time)
+            RshouldDoMaps = true;
+	}
+	
+    //Map Selection
     var obj = {};
     for (var map in game.global.mapsOwnedArray) {
         if (!game.global.mapsOwnedArray[map].noRecycle) {
@@ -1047,7 +1071,7 @@ function RautoMap() {
         selectedMap = "create";
 
     //Uniques
-    var runUniques = (getPageSetting('AutoMaps') == 1);
+    var runUniques = (getPageSetting('RAutoMaps') == 1);
     if (runUniques) {
         for (var map in game.global.mapsOwnedArray) {
             var theMap = game.global.mapsOwnedArray[map];
@@ -1067,8 +1091,8 @@ function RautoMap() {
                     selectedMap = theMap.id;
                     break;
                 }
-		if (theMap.name == 'Melting Point' && (game.global.challengeActive == "Melt" || getPageSetting('Rmeltsmithy') > 0)) {
-                    if (game.global.world < 51 || ((RcalcHDratio() > 500) || (getPageSetting('Rmeltsmithy') > game.buildings.Smithy.owned))) continue;
+		if (theMap.name == 'Melting Point' && ((game.global.challengeActive == "Trappapalooza" && getPageSetting('Rmeltpoint') == true) || (game.global.challengeActive == "Melt" && getPageSetting('Rmeltpoint') == true) || (getPageSetting('Rmeltsmithy') > 0 && getPageSetting('Rmeltsmithy') <= game.buildings.Smithy.owned && game.mapUnlocks.SmithFree.canRunOnce))) {
+                    if (game.global.world < 51) continue;
                     selectedMap = theMap.id;
                     break;
                 }
@@ -1153,7 +1177,7 @@ function RautoMap() {
     }
     if (!game.global.preMapsActive && game.global.mapsActive) {
         var doDefaultMapBonus = game.global.mapBonus < getPageSetting('RMaxMapBonuslimit') - 1;
-        if (selectedMap == game.global.currentMapId && (!getCurrentMapObject().noRecycle && (doDefaultMapBonus || vanillaMapatZone || RdoMaxMapBonus || RshouldFarm || RneedPrestige))) {
+        if (selectedMap == game.global.currentMapId && (!getCurrentMapObject().noRecycle && (doDefaultMapBonus || RvanillaMapatZone || RdoMaxMapBonus || RshouldFarm || RneedPrestige))) {
             var targetPrestige = autoTrimpSettings.RPrestige.selected;
             if (!game.global.repeatMap) {
                 repeatClicked();
@@ -1161,11 +1185,11 @@ function RautoMap() {
             if (!RshouldDoMaps && (game.global.mapGridArray[game.global.mapGridArray.length - 1].special == targetPrestige && game.mapUnlocks[targetPrestige].last >= game.global.world)) {
                 repeatClicked();
             }
-            if (shouldDoHealthMaps && game.global.mapBonus >= getPageSetting('RMaxMapBonushealth') - 1) {
+            if (shouldDoHealthMaps && game.global.mapBonus < getPageSetting('RMaxMapBonushealth')) {
                 repeatClicked();
                 shouldDoHealthMaps = false;
             }
-            if (RdoMaxMapBonus && game.global.mapBonus >= getPageSetting('RMaxMapBonuslimit') - 1) {
+            if (RdoMaxMapBonus && game.global.mapBonus < getPageSetting('RMaxMapBonuslimit')) {
                 repeatClicked();
                 RdoMaxMapBonus = false;
             }

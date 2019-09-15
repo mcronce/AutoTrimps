@@ -82,7 +82,6 @@ function betterAutoFight() {
         pauseFight();
     }
     if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done) return;
-    var targetBreed = getPageSetting('GeneticistTimer');
     var breeding = (game.resources.trimps.owned - game.resources.trimps.employed);
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
     var lowLevelFight = game.resources.trimps.maxSoldiers < breeding * 0.5 && breeding > game.resources.trimps.realMax() * 0.1 && game.global.world < 5;
@@ -126,3 +125,4 @@ function betterAutoFight3() {
         fightMaybe();
     }
 }
+
