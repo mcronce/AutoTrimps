@@ -282,7 +282,7 @@ function autoLevelEquipment() {
     var pierceMod = (game.global.brokenPlanet && !game.global.mapsActive) ? getPierceAmt() : 0;
     var numHits = MODULES["equipment"].numHitsSurvived;
     var enoughHealthE = (calcOurHealth(true) > numHits * (enemyDamage - calcOurBlock(true) > 0 ? enemyDamage - calcOurBlock(true) : enemyDamage * pierceMod));
-    var enoughDamageE = (ourDamage * enoughDamageCutoff > enemyHealth);
+    var enoughDamageE = calcHDratio() < enoughDamageCutoff;
 
     for (var equipName in equipmentList) {
         var equip = equipmentList[equipName];
