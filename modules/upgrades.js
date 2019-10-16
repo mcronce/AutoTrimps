@@ -17,7 +17,21 @@ function buyUpgrades() {
             // Amalgamators
             // TODO:  Make this readable
             if(getPageSetting('amalcoord') == true && getPageSetting('amalcoordhd') > 0 && calcHDratio() < getPageSetting('amalcoordhd') && ((getPageSetting('amalcoordt') < 0 && (game.global.world < getPageSetting('amalcoordz') || getPageSetting('amalcoordz') < 0)) || (getPageSetting('amalcoordt') > 0 && getPageSetting('amalcoordt') > game.jobs.Amalgamator.owned && (game.resources.trimps.realMax() / game.resources.trimps.getCurrentSend()) > 2000))) {
-                continue;
+                if(game.global.spireActive) {
+                    // This sucks, but without it we don't have enough health
+                    //    to complete Spire I.  Maybe make this more dynamic to
+                    //    support just making sure we survive spires, rather
+                    //    than hardcoding 20 per.  That said, 20 per spire is
+                    //    a lot less than we end up with in later zones just
+                    //    letting it do its thing with a amalcoordhd set to
+                    //    0.5, so it's probably fine.
+                    var target_coords = (game.global.world - 100) / 5;
+                    if(gameUpgrade.done >= target_coords) {
+                        continue;
+                    }
+                } else {
+                    continue;
+                }
             }
 
             //WS
