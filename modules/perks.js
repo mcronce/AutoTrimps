@@ -275,7 +275,7 @@ AutoPerks.getHelium = function() {
 
 AutoPerks.calculatePrice = function(perk, level) {
     if(perk.fluffy) return Math.ceil(perk.base * Math.pow(10,level));
-    else if(perk.type == 'exponential') return Math.ceil(level/2 + perk.base * Math.pow(1.3, level));
+    else if(perk.type == 'exponential') return Math.ceil(level/2 + perk.base * Math.pow(perk.exprate, level));
     else if(perk.type == 'linear') return Math.ceil(perk.base + perk.increase * level);
 }
 AutoPerks.calculateTotalPrice = function(perk, finalLevel) {
@@ -581,6 +581,7 @@ AutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
     this.name = name;
     this.base = base;
     this.type = "exponential";
+    this.exprate = 1.3;
     this.fixed = true;
     this.level = level || 0;
     this.spent = 0;
@@ -736,12 +737,14 @@ var Rqueuescript = document.createElement('script');
 queuescript.type = 'text/javascript';
 queuescript.src = 'https://Zorn192.github.io/AutoTrimps/FastPriorityQueue.js';
 head.appendChild(queuescript);
-//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,prismal]
-var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0];
-var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 15, 9];
-var RpresetList = [preset_RZek059,preset_Rspace];
+//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,prismal,equality,criticality,tenacity]
+var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2, 25];
+var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 0.5, 1, 3, 18];
+var RpresetList = [preset_RZek059,preset_RZekmelt,preset_Rspace];
 var RpresetListHtml = "\
 <option id='preset_RZek059'>Zek (z1-59)</option>\
+<option id='preset_RZekmelt'>Zek (Melt)</option>\
 <option id='preset_Rspace'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";
 RAutoPerks.createInput = function(perkname,div) {
@@ -788,16 +791,22 @@ RAutoPerks.displayGUI = function() {
     //Line 1 of the UI
     apGUI.$ratiosLine1 = document.createElement("DIV");
     apGUI.$ratiosLine1.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
-    var listratiosLine1 = ["Carpentry","Pheromones","Motivation","Artisanistry"];
+    var listratiosLine1 = ["Equality", "Carpentry","Pheromones","Motivation","Artisanistry"];
     for (var i in listratiosLine1)
         RAutoPerks.createInput(listratiosLine1[i],apGUI.$ratiosLine1);
     apGUI.$customRatios.appendChild(apGUI.$ratiosLine1);
     //Line 2 of the UI
     apGUI.$ratiosLine2 = document.createElement("DIV");
     apGUI.$ratiosLine2.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
-    var listratiosLine2 = ["Power","Looting","Toughness","Prismal"];
+    var listratiosLine2 = ["Power","Looting","Toughness","Prismal","Criticality"];
     for (var i in listratiosLine2)
         RAutoPerks.createInput(listratiosLine2[i],apGUI.$ratiosLine2);
+    //Line 3 of the UI
+    apGUI.$ratiosLine3 = document.createElement("DIV");
+    apGUI.$ratiosLine3.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
+    var listratiosLine3 = ["Tenacity"];
+    for (var i in listratiosLine3)
+        RAutoPerks.createInput(listratiosLine3[i],apGUI.$ratiosLine3);
     //Create dump perk dropdown
     apGUI.$dumpperklabel = document.createElement("Label");
     apGUI.$dumpperklabel.id = 'DumpPerk Label';
@@ -822,14 +831,15 @@ RAutoPerks.displayGUI = function() {
     oldstyle = 'text-align: center; width: 8vw; font-size: 0.8vw; font-weight: lighter; ';
     if(game.options.menu.darkTheme.enabled != 2) apGUI.$RratioPreset.setAttribute("style", oldstyle + " color: black;");
     else apGUI.$RratioPreset.setAttribute('style', oldstyle);
-    apGUI.$RratioPreset.innerHTML = presetListHtml;
+    apGUI.$RratioPreset.innerHTML = RpresetListHtml;
     var loadLastPreset = localStorage.getItem('RAutoperkSelectedRatioPresetID');
     var setID;
     if (loadLastPreset != null) { 
-       if (loadLastPreset == 8 && !localStorage.getItem('RAutoperkSelectedRatioPresetName'))
-            loadLastPreset = 4;
+        // Why 8?  What is this?
+        if (loadLastPreset == 8 && !localStorage.getItem('RAutoperkSelectedRatioPresetName'))
+            loadLastPreset = 2;
         if (localStorage.getItem('RAutoperkSelectedRatioPresetName')=="customPreset")
-            loadLastPreset = 4;
+            loadLastPreset = 2;
         setID = loadLastPreset;
     }
     else 
@@ -838,6 +848,7 @@ RAutoPerks.displayGUI = function() {
     apGUI.$ratiosLine1.appendChild(apGUI.$RratioPresetLabel);
     apGUI.$ratiosLine1.appendChild(apGUI.$RratioPreset);
     apGUI.$customRatios.appendChild(apGUI.$ratiosLine2);
+    apGUI.$customRatios.appendChild(apGUI.$ratiosLine3);
     var $portalWrapper = document.getElementById("portalWrapper");
     $portalWrapper.appendChild(apGUI.$customRatios);
     RAutoPerks.initializePerks();
@@ -919,6 +930,7 @@ RAutoPerks.updatePerkRatios = function() {
         currentPerk = RAutoPerks.getPerkByName($perkRatioBoxes[i].id.substring(0, $perkRatioBoxes[i].id.length - 5));
         currentPerk.updatedValue = parseFloat($perkRatioBoxes[i].value);
     }
+    RAutoPerks.getPerkByName("toughness").updatedValue = RAutoPerks.getPerkByName("resilience").updatedValue / 2;
     var tierIIPerks = RAutoPerks.getTierIIPerks();
     for(var i in tierIIPerks)
         tierIIPerks[i].updatedValue = tierIIPerks[i].parent.updatedValue / tierIIPerks[i].relativeIncrease;
@@ -985,14 +997,14 @@ RAutoPerks.getRadon = function() {
         if (game.portal[item].locked) continue;
         var portUpgrade = game.portal[item];
         if (typeof portUpgrade.radLevel === 'undefined') continue;
-        respecMax += portUpgrade.radonSpent;
+        respecMax += portUpgrade.radSpent;
     }
     return respecMax;
 };
 
 RAutoPerks.calculatePrice = function(perk, level) {
     if(perk.fluffy) return Math.ceil(perk.base * Math.pow(10,level));
-    else if(perk.type == 'exponential') return Math.ceil(level/2 + perk.base * Math.pow(1.3, level));
+    else if(perk.type == 'exponential') return Math.ceil(level/2 + perk.base * Math.pow(perk.exprate, level));
     else if(perk.type == 'linear') return Math.ceil(perk.base + perk.increase * level);
 };
 RAutoPerks.calculateTotalPrice = function(perk, finalLevel) {
@@ -1242,7 +1254,7 @@ RAutoPerks.applyCalculations = function(perks,remainingRadon){
     var needsRespec = false;
     for(var i in perks) {
         var capitalized = RAutoPerks.capitaliseFirstLetter(perks[i].name);
-        game.global.buyAmt = perks[i].radLevel - game.portal[capitalized].radLevel - game.portal[capitalized].radLevelTemp;
+        game.global.buyAmt = perks[i].radLevel - game.portal[capitalized].radLevel - game.portal[capitalized].levelTemp;
         if (game.global.buyAmt < 0) {
             needsRespec = true;
             if (MODULES["perks"].RshowDetails)
@@ -1274,7 +1286,7 @@ RAutoPerks.applyCalculations = function(perks,remainingRadon){
             for (var item in game.portal){
                 el = game.portal[item];
                 if (el.locked || el.radLevel <= 0) continue;
-                exportPerks[item] = el.radLevel + el.radLevelTemp;
+                exportPerks[item] = el.radLevel + el.levelTemp;
             }
             console.log(exportPerks);
         }
@@ -1298,6 +1310,7 @@ RAutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
     this.name = name;
     this.base = base;
     this.type = "exponential";
+    this.exprate = 1.3;
     this.fixed = true;
     this.radLevel = level || 0;
     this.spent = 0;
@@ -1340,6 +1353,7 @@ RAutoPerks.initializePerks = function () {
     var bait = new RAutoPerks.FixedPerk("bait", 4, 30);
     var trumps = new RAutoPerks.FixedPerk("trumps", 3, 30);
     var packrat = new RAutoPerks.FixedPerk("packrat", 3, 30);
+    var overkill = new RAutoPerks.FixedPerk("overkill", 1000000, 30);
     //variable
     var looting = new RAutoPerks.VariablePerk("looting", 1, false,             0, 0.05);
     var toughness = new RAutoPerks.VariablePerk("toughness", 1, false,         1, 0.05);
@@ -1348,12 +1362,18 @@ RAutoPerks.initializePerks = function () {
     var pheromones = new RAutoPerks.VariablePerk("pheromones", 3, false,       4, 0.1);
     var artisanistry = new RAutoPerks.VariablePerk("artisanistry", 15, true,   5, 0.1);
     var carpentry = new RAutoPerks.VariablePerk("carpentry", 25, true,         6, 0.1);
-    var prismal = new RAutoPerks.VariablePerk("prismal", 1, true,              6, 0.1);
+    var prismal = new RAutoPerks.VariablePerk("prismal", 1, true,              7, 0.1);
+    var resilience = new RAutoPerks.VariablePerk("resilience", 100, true,       9, 0.1);
+    var criticality = new RAutoPerks.VariablePerk("criticality", 100, true,     10, 0.1);
+    var tenacity = new RAutoPerks.VariablePerk("tenacity", 50000000, true,      11, 0.1);
+    // Equality is a 9/10 multiplier on enemy damage, which is like a 10/9 multiplier on your health.  So we pretend the bonus for this perk is 1/9.
+    var equality = new RAutoPerks.VariablePerk("equality", 1, true,            12, 0.11111);
+    equality.exprate = 1.5;
     //scruffy
 	//no
     //tier2
 	//no
-    RAutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, prismal];
+    RAutoPerks.perkHolder = [range, agility, bait, trumps, packrat, overkill, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, prismal, resilience, criticality, tenacity, equality];
     for(var i in RAutoPerks.perkHolder) {
         RAutoPerks.perkHolder[i].radLevel = 0;
         RAutoPerks.perkHolder[i].spent = 0;
@@ -1404,7 +1424,9 @@ RAutoPerks.getOwnedPerks = function() {
     for (var name in game.portal){
         perk = game.portal[name];
         if(perk.locked || (typeof perk.radLevel === 'undefined')) continue;
-        perks.push(RAutoPerks.getPerkByName(name));
+        var ownedPerk = RAutoPerks.getPerkByName(name);
+        if (typeof ownedPerk === 'undefined') continue;
+        perks.push(ownedPerk);
     }
     return perks;
 };
