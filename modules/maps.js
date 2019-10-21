@@ -169,10 +169,10 @@ function autoMap() {
     var voidMapLevelSettingCell;
     var voidMapLevelPlus = 0;
     if (game.global.challengeActive != "Daily") {
-	voidMapLevelSettingCell = ((getPageSetting('voidscell') > 0) ? getPageSetting('voidscell') : 70);
+        voidMapLevelSettingCell = ((getPageSetting('voidscell') > 0) ? getPageSetting('voidscell') : 70);
     }
     if (game.global.challengeActive == "Daily") {
-	voidMapLevelSettingCell = ((getPageSetting('dvoidscell') > 0) ? getPageSetting('dvoidscell') : 70);
+        voidMapLevelSettingCell = ((getPageSetting('dvoidscell') > 0) ? getPageSetting('dvoidscell') : 70);
     }
     if (game.global.challengeActive != "Daily" && getPageSetting('VoidMaps') > 0) {
         voidMapLevelSetting = getPageSetting('VoidMaps');
@@ -181,39 +181,40 @@ function autoMap() {
         voidMapLevelSetting = getPageSetting('DailyVoidMod');
     }
     if (getPageSetting('RunNewVoidsUntilNew') != 0 && game.global.challengeActive != "Daily") {
-	voidMapLevelPlus = getPageSetting('RunNewVoidsUntilNew');
+        voidMapLevelPlus = getPageSetting('RunNewVoidsUntilNew');
     }
     if (getPageSetting('dRunNewVoidsUntilNew') != 0 && game.global.challengeActive == "Daily") {
-	voidMapLevelPlus = getPageSetting('dRunNewVoidsUntilNew');
+        voidMapLevelPlus = getPageSetting('dRunNewVoidsUntilNew');
     }
 
+    // TODO:  Clean up this shit show
     needToVoid = (voidMapLevelSetting > 0 && game.global.totalVoidMaps > 0 && game.global.lastClearedCell + 1 >= voidMapLevelSettingCell &&
-			(
-			 (game.global.world == voidMapLevelSetting) ||
-			 (voidMapLevelPlus < 0 && game.global.world >= voidMapLevelSetting && 
-			  (game.global.universe == 1 && 
-			   (
-			    (getPageSetting('runnewvoidspoison') == false && game.global.challengeActive != "Daily") || 
-				(getPageSetting('drunnewvoidspoison') == false && game.global.challengeActive == "Daily")
-			   ) ||
-			   (
-			    (getPageSetting('runnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive != "Daily") || 
-			    (getPageSetting('drunnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive == "Daily")
-			   )
-			  ) ||
-			  (voidMapLevelPlus > 0 && game.global.world >= voidMapLevelSetting && game.global.world <= (voidMapLevelSetting + voidMapLevelPlus) &&
-			   (game.global.universe == 1 && 
-			    (
-			     (getPageSetting('runnewvoidspoison') == false && game.global.challengeActive != "Daily") || 
-				 (getPageSetting('drunnewvoidspoison') == false && game.global.challengeActive == "Daily")
-			    ) ||
-			    (
-			     (getPageSetting('runnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive != "Daily") || 
-			     (getPageSetting('drunnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive == "Daily")
-			    )
-			   )
-			  )
-			 )
+            (
+             (game.global.world == voidMapLevelSetting) ||
+             (voidMapLevelPlus < 0 && game.global.world >= voidMapLevelSetting && 
+              (game.global.universe == 1 && 
+               (
+                (getPageSetting('runnewvoidspoison') == false && game.global.challengeActive != "Daily") || 
+                (getPageSetting('drunnewvoidspoison') == false && game.global.challengeActive == "Daily")
+               ) ||
+               (
+                (getPageSetting('runnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive != "Daily") || 
+                (getPageSetting('drunnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive == "Daily")
+               )
+              ) ||
+              (voidMapLevelPlus > 0 && game.global.world >= voidMapLevelSetting && game.global.world <= (voidMapLevelSetting + voidMapLevelPlus) &&
+               (game.global.universe == 1 && 
+                (
+                 (getPageSetting('runnewvoidspoison') == false && game.global.challengeActive != "Daily") || 
+                 (getPageSetting('drunnewvoidspoison') == false && game.global.challengeActive == "Daily")
+                ) ||
+                (
+                 (getPageSetting('runnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive != "Daily") || 
+                 (getPageSetting('drunnewvoidspoison') == true && getEmpowerment() == 'Poison' && game.global.challengeActive == "Daily")
+                )
+               )
+              )
+             )
                         )
 );
 
@@ -844,8 +845,8 @@ function RupdateAutoMapsStatus(get) {
     else if (!game.global.mapsUnlocked) status = '&nbsp;';
     else if (RneedPrestige && !RdoVoids) status = 'Prestige';
     else if (RdoVoids) {
-	    var stackedMaps = Fluffy.isRewardActive('void') ? countStackedVoidMaps() : 0;
-	    status = 'Void Maps: ' + game.global.totalVoidMaps + ((stackedMaps) ? " (" + stackedMaps + " stacked)" : "") + ' remaining';
+        var stackedMaps = Fluffy.isRewardActive('void') ? countStackedVoidMaps() : 0;
+        status = 'Void Maps: ' + game.global.totalVoidMaps + ((stackedMaps) ? " (" + stackedMaps + " stacked)" : "") + ' remaining';
     }
     else if (RshouldFarm && !RdoVoids) status = 'Farming: ' + RcalcHDratio().toFixed(4) + 'x';
     else if (!RenoughHealth && !RenoughDamage) status = 'Want Health & Damage';
@@ -905,19 +906,19 @@ function RautoMap() {
         voidMapLevelSetting = getPageSetting('RDailyVoidMod');
     }
     if (getPageSetting('RRunNewVoidsUntilNew') != 0 && game.global.challengeActive != "Daily") {
-	voidMapLevelPlus = getPageSetting('RRunNewVoidsUntilNew');
+        voidMapLevelPlus = getPageSetting('RRunNewVoidsUntilNew');
     }
     if (getPageSetting('RdRunNewVoidsUntilNew') != 0 && game.global.challengeActive == "Daily") {
-	voidMapLevelPlus = getPageSetting('RdRunNewVoidsUntilNew');
+        voidMapLevelPlus = getPageSetting('RdRunNewVoidsUntilNew');
     }
 
     RneedToVoid = (voidMapLevelSetting > 0 && game.global.totalVoidMaps > 0 && game.global.lastClearedCell + 1 >= voidMapLevelSettingCell &&
-			(
-			 (game.global.world == voidMapLevelSetting) ||
-			 (voidMapLevelPlus < 0 && game.global.world >= voidMapLevelSetting) ||
-			 (voidMapLevelPlus > 0 && game.global.world >= voidMapLevelSetting && game.global.world <= (voidMapLevelSetting + voidMapLevelPlus))
-			)
-		 );
+            (
+             (game.global.world == voidMapLevelSetting) ||
+             (voidMapLevelPlus < 0 && game.global.world >= voidMapLevelSetting) ||
+             (voidMapLevelPlus > 0 && game.global.world >= voidMapLevelSetting && game.global.world <= (voidMapLevelSetting + voidMapLevelPlus))
+            )
+         );
 
     var voidArrayDoneS = [];
     if (game.global.challengeActive != "Daily" && getPageSetting('Ronlystackedvoids') == true) {
@@ -942,8 +943,9 @@ function RautoMap() {
     if ((getPageSetting('RForcePresZ') >= 0) && ((game.global.world + extraMapLevels) >= getPageSetting('RForcePresZ'))) {
         const prestigeList = ['Supershield', 'Dagadder', 'Megamace', 'Polierarm', 'Axeidic', 'Greatersword', 'Harmbalest', 'Bootboost', 'Hellishmet', 'Pantastic', 'Smoldershoulder', 'Bestplate', 'GambesOP'];
         RneedPrestige = prestigeList.some(prestige => game.mapUnlocks[prestige].last <= (game.global.world + extraMapLevels) - 5);
-    } else
+    } else {
         RneedPrestige = prestige != "Off" && game.mapUnlocks[prestige] && game.mapUnlocks[prestige].last <= (game.global.world + extraMapLevels) - 5;
+    }
 
     RskippedPrestige = false;
     if (RneedPrestige && (getPageSetting('RPrestigeSkip1_2') == 1 || getPageSetting('PrestigeSkip1_2') == 2)) {
@@ -951,8 +953,9 @@ function RautoMap() {
         var numUnbought = 0;
         for (var i in prestigeList) {
             var p = prestigeList[i];
-            if (game.upgrades[p].allowed - game.upgrades[p].done > 0)
+            if (game.upgrades[p].allowed - game.upgrades[p].done > 0) {
                 numUnbought++;
+            }
         }
         if (numUnbought >= customVars.SkipNumUnboughtPrestiges) {
             RneedPrestige = false;
@@ -977,8 +980,9 @@ function RautoMap() {
 
     if (getPageSetting('RDisableFarm') >= 1) {
         RshouldFarm = (RcalcHDratio() >= getPageSetting('RDisableFarm'));
-        if (game.options.menu.repeatUntil.enabled == 1 && RshouldFarm)
+        if (game.options.menu.repeatUntil.enabled == 1 && RshouldFarm) {
             toggleSetting('repeatUntil');
+        }
     }
     RenoughHealth = (RcalcOurHealth() > hitsSurvived * enemyDamage);
     RenoughDamage = (RcalcHDratio() <= mapenoughdamagecutoff);
@@ -991,9 +995,9 @@ function RautoMap() {
         RshouldDoMaps = (!RenoughDamage || RshouldFarm || RscryerStuck);
     }
     var shouldDoHealthMaps = false;
-    if (game.global.mapBonus >= getPageSetting('RMaxMapBonuslimit') && !RshouldFarm)
+    if (game.global.mapBonus >= getPageSetting('RMaxMapBonuslimit') && !RshouldFarm) {
         RshouldDoMaps = false;
-    else if (game.global.mapBonus < getPageSetting('RMaxMapBonushealth') && !RenoughHealth && !RshouldDoMaps) {
+    } else if (game.global.mapBonus < getPageSetting('RMaxMapBonushealth') && !RenoughHealth && !RshouldDoMaps) {
         RshouldDoMaps = true;
         shouldDoHealthMaps = true;
     }
@@ -1012,21 +1016,24 @@ function RautoMap() {
         var numUnbought = 0;
         for (var i = 0, len = prestigeList.length; i < len; i++) {
             var p = prestigeList[i];
-            if (game.upgrades[p].allowed - game.upgrades[p].done > 0)
+            if (game.upgrades[p].allowed - game.upgrades[p].done > 0) {
                 numUnbought++;
+            }
         }
         if (capped && prestigeitemsleft == 0 && numUnbought == 0) {
             RshouldFarm = false;
-            if (game.global.mapBonus >= getPageSetting('RMaxMapBonuslimit') && !RshouldFarm)
+            if (game.global.mapBonus >= getPageSetting('RMaxMapBonuslimit') && !RshouldFarm) {
                 RshouldDoMaps = false;
+            }
         }
     }
 
     //Map Bonus
     var maxMapBonusZ = getPageSetting('RMaxMapBonusAfterZone');
     RdoMaxMapBonus = (maxMapBonusZ >= 0 && game.global.mapBonus < getPageSetting("RMaxMapBonuslimit") && game.global.world >= maxMapBonusZ);
-    if (RdoMaxMapBonus)
+    if (RdoMaxMapBonus) {
         RshouldDoMaps = true;
+    }
 
     //Maps
     RvanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.global.canMapAtZone);
@@ -1036,23 +1043,24 @@ function RautoMap() {
                 RshouldDoMaps = true;
         }
     }
-	
+
     //Time Farm
     Rtimefarm = (game.global.world > 5 && (game.global.challengeActive != "Daily" && getPageSetting('Rtimefarmzone')[0] > 0 && getPageSetting('Rtimefarmtime')[0] > 0));
     if (Rtimefarm) {
-	var timefarmzone;
-	var timefarmtime;
-	var time = ((new Date().getTime() - game.global.zoneStarted) / 1000 / 60);
-	timefarmzone = getPageSetting('Rtimefarmzone');
-	timefarmtime = getPageSetting('Rtimefarmtime');
+        var timefarmzone;
+        var timefarmtime;
+        var time = ((new Date().getTime() - game.global.zoneStarted) / 1000 / 60);
+        timefarmzone = getPageSetting('Rtimefarmzone');
+        timefarmtime = getPageSetting('Rtimefarmtime');
 
-	var timefarmindex = timefarmzone.indexOf(game.global.world);
-	var timezones = timefarmtime[timefarmindex];
+        var timefarmindex = timefarmzone.indexOf(game.global.world);
+        var timezones = timefarmtime[timefarmindex];
 
-	if (!RshouldDoMaps && timefarmzone.includes(game.global.world) && timezones > time)
+        if (!RshouldDoMaps && timefarmzone.includes(game.global.world) && timezones > time) {
             RshouldDoMaps = true;
-	}
-	
+        }
+    }
+
     //Map Selection
     var obj = {};
     for (var map in game.global.mapsOwnedArray) {
@@ -1068,8 +1076,9 @@ function RautoMap() {
     if (keysSorted[0]) {
         highestMap = keysSorted[0];
         lowestMap = keysSorted[keysSorted.length - 1];
-    } else
+    } else {
         selectedMap = "create";
+    }
 
     //Uniques
     var runUniques = (getPageSetting('RAutoMaps') == 1);
@@ -1087,12 +1096,12 @@ function RautoMap() {
                     selectedMap = theMap.id;
                     break;
                 }
-		if (getPageSetting('Rprispalace') == true && theMap.name == 'Prismatic Palace' && game.mapUnlocks.Prismalicious.canRunOnce) {
+                if (getPageSetting('Rprispalace') == true && theMap.name == 'Prismatic Palace' && game.mapUnlocks.Prismalicious.canRunOnce) {
                     if (game.global.world < 21 || RcalcHDratio() > 25) continue;
                     selectedMap = theMap.id;
                     break;
                 }
-		if (theMap.name == 'Melting Point' && ((game.global.challengeActive == "Trappapalooza" && getPageSetting('Rmeltpoint') == true) || (game.global.challengeActive == "Melt" && getPageSetting('Rmeltpoint') == true) || (getPageSetting('Rmeltsmithy') > 0 && getPageSetting('Rmeltsmithy') <= game.buildings.Smithy.owned && game.mapUnlocks.SmithFree.canRunOnce))) {
+                if (theMap.name == 'Melting Point' && ((game.global.challengeActive == "Trappapalooza" && getPageSetting('Rmeltpoint') == true) || (game.global.challengeActive == "Melt" && getPageSetting('Rmeltpoint') == true) || (getPageSetting('Rmeltsmithy') > 0 && getPageSetting('Rmeltsmithy') <= game.buildings.Smithy.owned && game.mapUnlocks.SmithFree.canRunOnce))) {
                     if (game.global.world < 51) continue;
                     selectedMap = theMap.id;
                     break;
@@ -1157,10 +1166,12 @@ function RautoMap() {
         for (var map in voidArraySorted) {
             var theMap = voidArraySorted[map];
             RdoVoids = true;
-            if (getPageSetting('RDisableFarm') <= 0)
+            if (getPageSetting('RDisableFarm') <= 0) {
                 RshouldFarm = RshouldFarm || false;
-            if (!restartVoidMap)
+            }
+            if (!restartVoidMap) {
                 selectedMap = theMap.id;
+            }
             break;
         }
     }
@@ -1168,12 +1179,11 @@ function RautoMap() {
     //Automaps
     if (RshouldDoMaps || RdoVoids || RneedPrestige) {
         if (selectedMap == "world") {
-                if (game.global.world == game.global.mapsOwnedArray[highestMap].level) {
-                    selectedMap = game.global.mapsOwnedArray[highestMap].id;
-		}
-                else {
-                    selectedMap = "create";
-		}
+            if (game.global.world == game.global.mapsOwnedArray[highestMap].level) {
+                selectedMap = game.global.mapsOwnedArray[highestMap].id;
+            } else {
+                selectedMap = "create";
+            }
         }
     }
     if (!game.global.preMapsActive && game.global.mapsActive) {
@@ -1296,10 +1306,11 @@ function RautoMap() {
                     if (result == -2) {
                         recycleMap(lowestMap);
                         result = buyMap();
-                        if (result == -2)
+                        if (result == -2) {
                             debug("AutoMaps unable to recycle to buy map!");
-                        else
+                        } else {
                             debug("Retrying map buy after recycling lowest level map");
+                        }
                     }
                 }
             }
