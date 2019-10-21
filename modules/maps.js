@@ -615,6 +615,7 @@ function autoMap() {
             shouldFarm = false;
             doVoids = false;
             needPrestige = false;
+            shouldDoMaps = false;
         }
     }
 
