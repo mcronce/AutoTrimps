@@ -614,9 +614,8 @@ function autoMap() {
 
         if(!do_maps_this_zone) {
             shouldFarm = false;
-            doVoids = false;
             needPrestige = false;
-            shouldDoMaps = false;
+            shouldDoMaps = doVoids;
         }
     }
 
