@@ -344,6 +344,7 @@ function initializeAllSettings() {
     //Portal Line
     document.getElementById('dlowdmg').parentNode.insertAdjacentHTML('afterend', '<br>');
     createSetting('AutoStartDaily', 'Auto Start Daily', 'Starts Dailies for you. When you portal with this on, it will select the oldest Daily and run it. Use the settings in this tab to decide whats next. ', 'boolean', false, null, 'Daily');
+    createSetting('u2daily', 'Daily in U2', 'If this is on, you will do your daily in U2. ', 'boolean', false, null, 'Daily');
     createSetting('AutoPortalDaily', ['Daily Portal Off', 'DP: He/Hr', 'DP: Custom'], '<b>DP: He/Hr:</b> Portals when your world zone is above the minium you set (if applicable) and the buffer falls below the % you have defined. <br><b>DP: Custom:</b> Portals after clearing the zone you have defined in Daily Custom Portal. ', 'multitoggle', '0', null, "Daily");
     createSetting('dHeliumHourChallenge', 'DP: Challenge', 'Automatically portal into this challenge when using helium per hour or custom autoportal in dailies when there are none left. Custom portals after cell 100 of the zone specified. Do not choose a challenge if you havent unlocked it. ', 'dropdown', 'None', ['None', 'Balance', 'Decay', 'Electricity', 'Life', 'Crushed', 'Nom', 'Toxicity', 'Watch', 'Lead', 'Corrupted', 'Domination'], "Daily");
     createSetting('dCustomAutoPortal', 'Daily Custom Portal', 'Automatically portal AFTER clearing this level in dailies. (ie: setting to 200 would portal when you first reach level 201)', 'value', '999', null, "Daily");
@@ -357,6 +358,7 @@ function initializeAllSettings() {
     //RPortal Line
     document.getElementById('dlowdmg').parentNode.insertAdjacentHTML('afterend', '<br>');
     createSetting('RAutoStartDaily', 'Auto Start Daily', 'Starts Dailies for you. When you portal with this on, it will select the oldest Daily and run it. Use the settings in this tab to decide whats next. ', 'boolean', false, null, 'Daily');
+    createSetting('u1daily', 'Daily in U1', 'If this is on, you will do your daily in U1. ', 'boolean', false, null, 'Daily');
     createSetting('RAutoPortalDaily', ['Daily Portal Off', 'DP: Rn/Hr', 'DP: Custom'], '<b>DP: Rn/Hr:</b> Portals when your world zone is above the minium you set (if applicable) and the buffer falls below the % you have defined. <br><b>DP: Custom:</b> Portals after clearing the zone you have defined in Daily Custom Portal. ', 'multitoggle', '0', null, "Daily");
     createSetting('RdHeliumHourChallenge', 'DP: Challenge', 'Automatically portal into this challenge when using radon per hour or custom autoportal in dailies when there are none left. Custom portals after cell 100 of the zone specified. Do not choose a challenge if you havent unlocked it. ', 'dropdown', 'None', ['None','Bublé','Melt','Quest'], "Daily");
     createSetting('RdCustomAutoPortal', 'Daily Custom Portal', 'Automatically portal AFTER clearing this level in dailies. (ie: setting to 200 would portal when you first reach level 201)', 'value', '999', null, "Daily");
@@ -512,6 +514,7 @@ function initializeAllSettings() {
 
     //Line 1
     createSetting('AutoMaps', ["Auto Maps Off", "Auto Maps On", "Auto Maps No Unique"], 'Automaps. The no unique setting will not run unique maps such as dimensions of anger. Recommended ON. ', 'multitoggle', 1, null, "Maps");
+    createSetting('automapsportal', 'AM Portal', 'Makes sure Auto Maps is on after portalling. Turn this off to disable this and remember your choice. ', 'boolean', true, null, 'Maps');
     createSetting('DynamicSiphonology', 'Dynamic Siphonology', 'Recommended Always ON. Use the right level of siphonology based on your damage output. IE: Only uses  siphonology if you are weak. With this OFF it means it ALWAYS uses the lowest siphonology map you can create. Siphonology is a perk you get at level 115-125ish, and means you receive map bonus stacks for running maps below your current zone - Up to 3 zones below (1 per perk level).', 'boolean', true, null, 'Maps');
     createSetting('PreferMetal', 'Prefer Metal Maps', 'Always prefer metal maps, intended for manual use, such as pre-spire farming. Remember to turn it back off after you\'re done farming!', 'boolean', false, null, 'Maps');
     createSetting('mapselection', 'Map Selection', 'Select which you prefer to use. Recommend Gardens if you have unlocked it. ', 'dropdown', 'Mountain', ["Random", "Mountain", "Forest", "Sea", "Depths", "Gardens"], 'Maps');
@@ -544,6 +547,7 @@ function initializeAllSettings() {
 
     //Line 1
     createSetting('RAutoMaps', ["Auto Maps Off", "Auto Maps On", "Auto Maps No Unique"], 'Automaps. The no unique setting will not run unique maps such as dimensions of rage. Recommended ON. ', 'multitoggle', 1, null, "Maps");
+    createSetting('Rautomapsportal', 'AM Portal', 'Makes sure Auto Maps is on after portalling. Turn this off to disable this and remember your choice. ', 'boolean', true, null, 'Maps');
     createSetting('Rmapselection', 'Map Selection', 'Select which you prefer to use. Recommend Gardens if you have unlocked it. ', 'dropdown', 'Mountain', ["Random", "Mountain", "Forest", "Sea", "Depths", "Gardens"], 'Maps');
     createSetting('RMaxMapBonusAfterZone', 'Max MapBonus After', 'Always gets Max Map Bonus from this zone on. (inclusive and after).<br><b>NOTE:</b> Set -1 to disable entirely (default). Set 0 to use it always. ', 'value', '-1', null, 'Maps');
     createSetting('RMaxMapBonuslimit', 'Max MapBonus Limit', 'Limit the amount of Map Bonuses you get. Default is 10. ', 'value', '10', null, 'Maps');
@@ -791,7 +795,12 @@ function initializeAllSettings() {
     document.getElementById('cAutoGoldenUpgrades').parentNode.insertAdjacentHTML('afterend', '<br>');
     createSetting('voidheliumbattle', 'Void Battle', '<b>-1 to disable.</b><br> Buys Battle goldens instead of Helium at this zone and onwards. This option only appears when selecting void. ', 'value', -1, null, 'Golden');
     createSetting('dvoidheliumbattle', 'Daily Void Battle', '<b>-1 to disable.</b><br> Buys Battle goldens instead of Helium at this zone and onwards in Dailies. This option only appears when selecting void. ', 'value', -1, null, 'Golden');
-
+    createSetting('radonbattle', 'Helium Battle', '<b>-1 to disable.</b><br> Buys Battle goldens instead of helium after this many helium goldens have been purchased and onwards. This option only appears when selecting helium. ', 'value', -1, null, 'Golden');
+    createSetting('dradonbattle', 'Daily Helium Battle', '<b>-1 to disable.</b><br> Buys Battle goldens instead of helium after this many helium goldens have been purchased and onwards in Dailies. This option only appears when selecting helium. ', 'value', -1, null, 'Golden');
+    createSetting('battleradon', 'Battle Helium', '<b>-1 to disable.</b><br> Buys helium goldens instead of Battle after this many Battle goldens have been purchased and onwards. This option only appears when selecting battle. ', 'value', -1, null, 'Golden');
+    createSetting('dbattleradon', 'Daily Battle Helium', '<b>-1 to disable.</b><br> Buys helium goldens instead of Battle after this many battle goldens have been purchased and onwards in Dailies. This option only appears when selecting battle. ', 'value', -1, null, 'Golden');
+    
+    
     //RGolden
 
     createSetting('RAutoGoldenUpgrades', 'AutoGoldenUpgrades', 'Buys Golden Upgrades in Fillers. Radon buys all Radon golden upgrades. Battle buys all Battle golden upgrades. Void buys 8 Void golden upgrades (max number you can buy) then buys helium golden upgrades. Void + Battle buys 8 voids then battle. ', 'dropdown', 'Off', ["Off", "Radon", "Battle", "Void", "Void + Battle"], 'Golden');
@@ -1347,6 +1356,7 @@ function updateCustomButtons() {
 
     //DPortal
     !radonon ? turnOn("AutoStartDaily"): turnOff("AutoStartDaily");
+    !radonon ? turnOn("u2daily"): turnOff("u2daily");
     !radonon ? turnOn("AutoPortalDaily"): turnOff("AutoPortalDaily");
     !radonon && getPageSetting('AutoPortalDaily')==2 ? turnOn("dCustomAutoPortal") : turnOff("dCustomAutoPortal");
     !radonon && getPageSetting('AutoPortalDaily')==1 ? turnOn("dHeHrDontPortalBefore") : turnOff("dHeHrDontPortalBefore");
@@ -1376,6 +1386,7 @@ function updateCustomButtons() {
 
     //RDPortal
     radonon ? turnOn("RAutoStartDaily"): turnOff("RAutoStartDaily");
+    radonon ? turnOn("u1daily"): turnOff("u1daily");
     radonon ? turnOn("RAutoPortalDaily"): turnOff("RAutoPortalDaily");
     radonon && getPageSetting('RAutoPortalDaily')==2 ? turnOn("RdCustomAutoPortal") : turnOff("RdCustomAutoPortal");
     radonon && getPageSetting('RAutoPortalDaily')==1 ? turnOn("RdHeHrDontPortalBefore") : turnOff("RdHeHrDontPortalBefore");
@@ -1498,6 +1509,7 @@ function updateCustomButtons() {
 
     //Maps
     !radonon ? turnOn("AutoMaps"): turnOff("AutoMaps");
+    !radonon ? turnOn("automapsportal"): turnOff("automapsportal");
     !radonon ? turnOn("mapselection"): turnOff("mapselection");
     !radonon ? turnOn("DynamicSiphonology"): turnOff("DynamicSiphonology");
     !radonon ? turnOn("PreferMetal"): turnOff("PreferMetal");
@@ -1521,6 +1533,7 @@ function updateCustomButtons() {
     
     //RMaps
     radonon ? turnOn("RAutoMaps"): turnOff("RAutoMaps");
+    radonon ? turnOn("Rautomapsportal"): turnOff("Rautomapsportal");
     radonon ? turnOn("Rmapselection"): turnOff("Rmapselection");
     radonon ? turnOn("RMaxMapBonusAfterZone"): turnOff("RMaxMapBonusAfterZone");
     radonon ? turnOn("RMaxMapBonuslimit"): turnOff("RMaxMapBonuslimit");
@@ -1672,6 +1685,10 @@ function updateCustomButtons() {
     !radonon ? turnOn("cAutoGoldenUpgrades"): turnOff("cAutoGoldenUpgrades");
     !radonon && getPageSetting('AutoGoldenUpgrades') == "Void" ? turnOn('voidheliumbattle') : turnOff('voidheliumbattle');
     !radonon && getPageSetting('dAutoGoldenUpgrades') == "Void" ? turnOn('dvoidheliumbattle') : turnOff('dvoidheliumbattle');
+    !radonon && getPageSetting('AutoGoldenUpgrades') == "Helium" ? turnOn('radonbattle') : turnOff('radonbattle');
+    !radonon && getPageSetting('dAutoGoldenUpgrades') == "Helium" ? turnOn('dradonbattle') : turnOff('dradonbattle');
+    !radonon && getPageSetting('AutoGoldenUpgrades') == "Battle" ? turnOn('battleradon') : turnOff('battleradon');
+    !radonon && getPageSetting('dAutoGoldenUpgrades') == "Battle" ? turnOn('dbattleradon') : turnOff('dbattleradon');
     
     //RGolden
     radonon ? turnOn("RAutoGoldenUpgrades"): turnOff("RAutoGoldenUpgrades");

@@ -108,8 +108,10 @@ function dailyAutoPortal() {
                             abandonDaily();
                             document.getElementById('finishDailyBtnContainer').style.display = 'none';
                         }
-                        if (autoTrimpSettings.dHeliumHourChallenge.selected != 'None')
+                        if (autoTrimpSettings.dHeliumHourChallenge.selected != 'None' && getPageSetting('u1daily') == false)
                             doPortal(autoTrimpSettings.dHeliumHourChallenge.selected);
+			else if (autoTrimpSettings.RdHeliumHourChallenge.selected != 'None' && getPageSetting('u1daily') == true)
+                            doPortal(autoTrimpSettings.RdHeliumHourChallenge.selected);
                         else
                             doPortal();
                     }, MODULES["portal"].timeout + 100);
@@ -122,8 +124,10 @@ function dailyAutoPortal() {
         if (game.global.world > portalzone) {
             abandonDaily();
             document.getElementById('finishDailyBtnContainer').style.display = 'none';
-            if (autoTrimpSettings.dHeliumHourChallenge.selected != 'None')
+            if (autoTrimpSettings.dHeliumHourChallenge.selected != 'None' && getPageSetting('u1daily') == false)
                 doPortal(autoTrimpSettings.dHeliumHourChallenge.selected);
+	    else if (autoTrimpSettings.RdHeliumHourChallenge.selected != 'None' && getPageSetting('u1daily') == true)
+                doPortal(autoTrimpSettings.RdHeliumHourChallenge.selected);
             else
                 doPortal();
         }
@@ -244,6 +248,9 @@ function doPortal(challenge) {
         else debug("C2 Runner: All C2s above Threshold!");
     }
     if (portalWindowOpen && getPageSetting('AutoStartDaily') == true && c2done) {
+	if (getPageSetting('u2daily') == true && portalUniverse == 1) {
+	    swapPortalUniverse();
+	}
         selectChallenge('Daily');
         checkCompleteDailies();
         var lastUndone = -7;
@@ -254,6 +261,9 @@ function doPortal(challenge) {
         }
         if (lastUndone == 1) {
             debug("All available Dailies already completed.", "portal");
+	    if ((getPageSetting('u1daily') == true && portalUniverse == 1 && challenge == autoTrimpSettings.RdHeliumHourChallenge.selected) || (getPageSetting('u2daily') == true && portalUniverse == 2)) {
+	        swapPortalUniverse();
+	    }
             selectChallenge(challenge || 0);
         } else {
             getDailyChallenge(lastUndone);
@@ -261,6 +271,9 @@ function doPortal(challenge) {
         }
     }
     else if(portalWindowOpen && challenge && c2done) {
+	if (getPageSetting('u1daily') == true && portalUniverse == 1 && challenge == autoTrimpSettings.RdHeliumHourChallenge.selected) {
+	    swapPortalUniverse();
+	}
         selectChallenge(challenge);
     }
     if (portalWindowOpen && getPageSetting('AutoAllocatePerks')==2) {
@@ -377,8 +390,10 @@ function RdailyAutoPortal() {
                             abandonDaily();
                             document.getElementById('finishDailyBtnContainer').style.display = 'none';
                         }
-                        if (autoTrimpSettings.RdHeliumHourChallenge.selected != 'None')
+                        if (autoTrimpSettings.RdHeliumHourChallenge.selected != 'None' && getPageSetting('u2daily') == false)
                             RdoPortal(autoTrimpSettings.RdHeliumHourChallenge.selected);
+			else if (autoTrimpSettings.dHeliumHourChallenge.selected != 'None' && getPageSetting('u2daily') == true)
+                            RdoPortal(autoTrimpSettings.dHeliumHourChallenge.selected);
                         else
                             RdoPortal();
                     }, MODULES["portal"].timeout + 100);
@@ -391,8 +406,10 @@ function RdailyAutoPortal() {
         if (game.global.world > portalzone) {
             abandonDaily();
             document.getElementById('finishDailyBtnContainer').style.display = 'none';
-            if (autoTrimpSettings.RdHeliumHourChallenge.selected != 'None')
+            if (autoTrimpSettings.RdHeliumHourChallenge.selected != 'None' && getPageSetting('u2daily') == false)
                 RdoPortal(autoTrimpSettings.RdHeliumHourChallenge.selected);
+	    else if (autoTrimpSettings.dHeliumHourChallenge.selected != 'None' && getPageSetting('u2daily') == true)
+                RdoPortal(autoTrimpSettings.dHeliumHourChallenge.selected);
             else
                 RdoPortal();
         }
@@ -429,7 +446,10 @@ function RdoPortal(challenge) {
         RAutoPerks.clickAllocate();
     }
     if (portalWindowOpen && getPageSetting('RAutoStartDaily') == true) {
-        selectChallenge('Daily');
+        if (getPageSetting('u1daily') == true && portalUniverse == 2) {
+	    swapPortalUniverse();
+	}
+	selectChallenge('Daily');
         checkCompleteDailies();
         var lastUndone = -7;
         while (++lastUndone <= 0) {
@@ -439,6 +459,9 @@ function RdoPortal(challenge) {
         }
         if (lastUndone == 1) {
             debug("All available Dailies already completed.", "portal");
+	    if ((getPageSetting('u2daily') == true && portalUniverse == 2 && challenge == autoTrimpSettings.dHeliumHourChallenge.selected) || (getPageSetting('u1daily') == true && portalUniverse == 1)) {
+	        swapPortalUniverse();
+	    }
             selectChallenge(challenge || 0);
         } else {
             getDailyChallenge(lastUndone);
@@ -446,7 +469,10 @@ function RdoPortal(challenge) {
         }
     }
     else if(portalWindowOpen && challenge) {
-        selectChallenge(challenge);
+	    if (getPageSetting('u2daily') == true && portalUniverse == 2 && challenge == autoTrimpSettings.dHeliumHourChallenge.selected) {
+	        swapPortalUniverse();
+	    }
+            selectChallenge(challenge);
     }
     if (portalWindowOpen && getPageSetting('RAutoAllocatePerks')==2) {
 	numTab(6, true)
